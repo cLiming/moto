@@ -1,7 +1,10 @@
 package com.woniu.soft.service;
 
-import com.woniu.soft.entity.Drug;
+import java.util.List;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.woniu.soft.entity.Drug;
+import com.woniu.soft.entity.DrugEntity;
 
 /**
  * <p>
@@ -9,8 +12,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author liming
- * @since 2020-10-15
+ * @since 2020-10-12
  */
 public interface DrugService extends IService<Drug> {
-
+	void updateDrugUp(Integer drugId,Integer number)throws Exception;
+	void updateDrugDown(Integer drugId,Integer number)throws Exception;
+	void updateDrugPrice(Integer drugId,double price)throws Exception;
+	
+	List<DrugEntity> selectDrugEntity(Integer id) throws Exception;
 }

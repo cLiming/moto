@@ -5,13 +5,15 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
+import org.hibernate.validator.constraints.CodePointLength;
+
 /**
  * <p>
  * 
  * </p>
  *
  * @author liming
- * @since 2020-10-15
+ * @since 2020-10-12
  */
 public class PresDrug implements Serializable {
 
@@ -22,19 +24,40 @@ public class PresDrug implements Serializable {
 
     private Integer presId;
 
-    private Integer drId;
 
     private Integer number;
+
+    private Integer drugId;
     
     @TableField(exist = false)
-    private Drug drug;
+    private String drugName;
     
-    public Drug getDrug() {
-		return drug;
+    @TableField(exist = false)
+    private Integer baseNumber;
+    
+    
+	public String getDrugName() {
+		return drugName;
 	}
 
-	public void setDrug(Drug drug) {
-		this.drug = drug;
+	public void setDrugName(String drugName) {
+		this.drugName = drugName;
+	}
+
+	public Integer getBaseNumber() {
+		return baseNumber;
+	}
+
+	public void setBaseNumber(Integer baseNumber) {
+		this.baseNumber = baseNumber;
+	}
+
+	public Integer getDrugId() {
+		return drugId;
+	}
+
+	public void setDrugId(Integer drugId) {
+		this.drugId = drugId;
 	}
 
 	public Integer getId() {
@@ -53,15 +76,8 @@ public class PresDrug implements Serializable {
         this.presId = presId;
     }
 
-    public Integer getDrId() {
-		return drId;
-	}
 
-	public void setDrId(Integer drId) {
-		this.drId = drId;
-	}
-
-	public Integer getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
@@ -69,11 +85,4 @@ public class PresDrug implements Serializable {
         this.number = number;
     }
 
-	@Override
-	public String toString() {
-		return "PresDrug [id=" + id + ", presId=" + presId + ", drId=" + drId + ", number=" + number + ", drug=" + drug
-				+ "]";
-	}
-
-    
 }

@@ -12,5 +12,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2020-10-15
  */
 public interface PrescriptionService extends IService<Prescription> {
-
+		Prescription selectByMid(Integer mid)throws Exception;
+	
+		Prescription selectByMidStatus(Integer mid,Integer status)throws Exception;
+	
+		void removeByAdId(Integer adId)throws Exception;
+	
+		void updateStatusEq1(Prescription prescription)throws Exception;
+	
 }

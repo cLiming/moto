@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.woniu.soft.entity.AdmissionRecord;
 import com.woniu.soft.entity.Adviceinfo;
 import com.woniu.soft.entity.BigInfo;
 import com.woniu.soft.entity.CaseHistory;
@@ -25,7 +24,6 @@ import com.woniu.soft.entity.Prescription;
 import com.woniu.soft.entity.Project;
 import com.woniu.soft.entity.ReturnApplication;
 import com.woniu.soft.entity.User;
-import com.woniu.soft.service.AdmissionRecordService;
 import com.woniu.soft.service.AdviceinfoService;
 import com.woniu.soft.service.CaseHistoryService;
 import com.woniu.soft.service.ConsultationService;
@@ -60,8 +58,6 @@ public class DoctorController {
 	@Resource
 	private ProjectService proService;
 	@Resource
-	private AdmissionRecordService arService;
-	@Resource
 	private CaseHistoryService chService;
 	@Resource
 	private ConsultationService consultationService;
@@ -81,7 +77,7 @@ public class DoctorController {
 				medAdvice.setPrescription(prescription);
 				if (prescription != null) {
 					List<PresDrug> DrugList = presDrugService.selectListByPid(prescription.getId());
-					prescription.setInfo(DrugList);
+					prescription.setpresDrugs(DrugList);
 				}
 			}
 		}
@@ -139,7 +135,7 @@ public class DoctorController {
 		if (prescription != null) {
 			prescription.setAdId(medAdvice.getId());
 			prescriptionService.save(prescription);
-			List<PresDrug> drugInfo = prescription.getInfo();
+			List<PresDrug> drugInfo = prescription.getpresDrugs();
 			if (drugInfo != null) {
 				for (PresDrug presDrug : drugInfo) {
 					if (presDrug.getDrugId() != null || !presDrug.getDrugId().equals("")) {
@@ -174,7 +170,7 @@ public class DoctorController {
 		maService.updateById(medAdvice);
 		Prescription prescription = medAdvice.getPrescription();
 		if (prescription != null) {
-			List<PresDrug> drugInfo = prescription.getInfo();
+			List<PresDrug> drugInfo = prescription.getpresDrugs();
 			if (drugInfo != null) {
 				presDrugService.removeByPid(prescription.getId());
 				presDrugService.saveBatch(drugInfo);
@@ -188,17 +184,6 @@ public class DoctorController {
 		return new JSONResult("200", "success", null, null);
 	}
 
-	// 查询入院记录
-	@RequestMapping("/record")
-	public JSONResult selectAdmissionRecord(Integer pageIndex, Integer pageNum) throws Exception {
-		Page<AdmissionRecord> page = new Page<AdmissionRecord>(pageIndex, pageNum);
-		arService.page(page);
-		List<AdmissionRecord> list = page.getRecords();
-		for (AdmissionRecord Record : list) {
-			Record.setUser(userService.getById(Record.getUid()));
-		}
-		return new JSONResult("200", "success", null, page);
-	}
 
 	// 出院申请（更改status为4）
 	@RequestMapping("/leave")
@@ -296,7 +281,7 @@ public class DoctorController {
 						presDrug.setDrugName(drug.getName());
 						presDrug.setBaseNumber(drug.getNumber());
 					}
-					prescription.setInfo(presList);
+					prescription.setpresDrugs(presList);
 					User user = userService.getById(medAdvice.getuId());
 					prescription.setUser(user);
 					list.add(prescription);
