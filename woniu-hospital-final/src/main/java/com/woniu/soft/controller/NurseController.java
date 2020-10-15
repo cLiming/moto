@@ -36,7 +36,6 @@ public class NurseController {
 	}
 	
 	@PostMapping
-	//aweeeeeeeeeeeeeeeee
 	//新增一个护理记录
 	public JSONResult insertPio( Pio pio) throws Exception{
 		Subject subject = SecurityUtils.getSubject();
@@ -78,7 +77,7 @@ public class NurseController {
 	}
 	//查询该用户的已完成，未结算的医嘱
 	@RequestMapping("spend")
-	public JSONResult selectAdvices(Integer id) throws Exception {
+	public JSONResult selectAdvices(Integer id) {
 		return new JSONResult("200","success",nurseService.selectAdvices(id),null);
 	}
 	//根据医嘱id查询用户项目的单价，次数，传回一个医嘱对象
