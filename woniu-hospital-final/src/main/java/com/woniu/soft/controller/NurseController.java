@@ -36,6 +36,7 @@ public class NurseController {
 	}
 	
 	@PostMapping
+	//aweeeeeeeeeeeeeeeee
 	//新增一个护理记录
 	public JSONResult insertPio( Pio pio) throws Exception{
 		Subject subject = SecurityUtils.getSubject();
