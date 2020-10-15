@@ -306,12 +306,14 @@ public class DoctorController {
 		return new JSONResult("200", "success", list, null);
 	}
 	
+	//退药申请
 	@RequestMapping("/selectDrugEntity")
 	public JSONResult selectDrugEntity(Integer uid) throws Exception {
 		List<DrugEntity> drugEntitys = drugService.selectDrugEntity(uid);
 		for (DrugEntity drugEntity : drugEntitys) {
 			Drug drug = drugService.getById(drugEntity.getDrugId());
 			drugEntity.setDrugName(drug.getName());
+			drugEntity.setuId(uid);
 		}
 		return new JSONResult("200", "success", drugEntitys, null); 
 	}
