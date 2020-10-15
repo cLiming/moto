@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.woniu.soft.entity.MedAdvice;
 import com.woniu.soft.entity.Pio;
-import com.woniu.soft.entity.Prescription;
 import com.woniu.soft.entity.ReturnApplication;
 import com.woniu.soft.entity.User;
 import com.woniu.soft.entity.Workers;
@@ -24,12 +23,13 @@ import com.woniu.soft.utils.JSONResult;
 
 @RestController
 @RequestMapping("/nurse")
+@SuppressWarnings("all")
 public class NurseController {
 	@Resource
 	private NurseService nurseService;
 	@GetMapping
 	//查询该护士负责的所有病人,不管任何状态的病人
-	public JSONResult selectLogById() throws Exception {
+	public JSONResult selectLogById() {
 		Subject subject = SecurityUtils.getSubject();
 		Workers worker = (Workers)subject.getPrincipal();
 		return new JSONResult("200","success",nurseService.selectLogById(worker.getId()),null);

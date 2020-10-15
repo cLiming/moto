@@ -9,9 +9,7 @@ import org.springframework.context.annotation.ImportResource;
 @MapperScan("com.woniu.soft.mapper")
 @ImportResource("classpath:transaction.xml")
 public class WoniuHospitalFinalApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(WoniuHospitalFinalApplication.class, args);
 	}
-
 }
