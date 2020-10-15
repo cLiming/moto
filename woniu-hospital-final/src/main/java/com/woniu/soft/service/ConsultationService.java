@@ -1,7 +1,9 @@
 package com.woniu.soft.service;
 
-import com.woniu.soft.entity.Consultation;
+import java.util.List;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.woniu.soft.entity.Consultation;
 
 /**
  * <p>
@@ -9,8 +11,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author liming
- * @since 2020-10-15
+ * @since 2020-10-12
  */
 public interface ConsultationService extends IService<Consultation> {
-
+	List<Consultation> selectByStatusEq0()throws Exception;
 }
