@@ -73,7 +73,7 @@ public class DoctorController {
 			for (MedAdvice medAdvice : list) {
 				List<Adviceinfo> adviceinfos = aiService.selectAdviceinfosByMid(medAdvice.getId());
 				Prescription prescription = prescriptionService.selectByMid(medAdvice.getId());
-				medAdvice.setInfo(adviceinfos);
+				medAdvice.setAdviceinfo(adviceinfos);
 				medAdvice.setPrescription(prescription);
 				if (prescription != null) {
 					List<PresDrug> DrugList = presDrugService.selectListByPid(prescription.getId());
@@ -147,7 +147,7 @@ public class DoctorController {
 				}
 			}
 		}
-		List<Adviceinfo> info = medAdvice.getInfo();
+		List<Adviceinfo> info = medAdvice.getAdviceinfo();
 		if (info != null) {
 			for (Adviceinfo adviceinfo : info) {
 				adviceinfo.setMedAdviceId(medAdvice.getId());
@@ -176,7 +176,7 @@ public class DoctorController {
 				presDrugService.saveBatch(drugInfo);
 			}
 		}
-		List<Adviceinfo> info = medAdvice.getInfo();
+		List<Adviceinfo> info = medAdvice.getAdviceinfo();
 		if (info != null) {
 			aiService.removeByMid(medAdvice.getId());
 			aiService.saveBatch(info);

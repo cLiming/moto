@@ -19,7 +19,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
  */
 public class MedAdvice implements Serializable {
 	@TableField(exist = false)
-	private List<Adviceinfo> info;
+	private List<Adviceinfo> adviceinfo;
 	
 	@TableField(exist = false)
 	private Prescription prescription;
@@ -46,7 +46,7 @@ public class MedAdvice implements Serializable {
 
 	@Override
 	public String toString() {
-		return "MedAdvice [info=" + info + ", prescription=" + prescription + ", id=" + id + ", uId=" + uId + ", wId="
+		return "MedAdvice [adviceinfo=" + adviceinfo + ", prescription=" + prescription + ", id=" + id + ", uId=" + uId + ", wId="
 				+ wId + ", status=" + status + ", creatTime=" + creatTime + ", pTotal=" + pTotal + ", dTotal=" + dTotal
 				+ "]";
 	}
@@ -88,16 +88,14 @@ public class MedAdvice implements Serializable {
 	
 
 
-	public List<Adviceinfo> getInfo() {
-		return info;
+	public List<Adviceinfo> getAdviceinfo() {
+		return adviceinfo;
 	}
 
 
-
-	public void setInfo(List<Adviceinfo> info) {
-		this.info = info;
+	public void setAdviceinfo(List<Adviceinfo> adviceinfo) {
+		this.adviceinfo = adviceinfo;
 	}
-
 
 
 	public Integer getId() {
