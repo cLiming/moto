@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>出院审核</title>
+<script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="/js/vue.js"></script>
+<!-- 引入样式 -->
+<link rel="stylesheet"
+	href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+	<div id="app">
+		<el-table :data="returnDrugList" border style="width: 100%"> 
+				<el-table-column fixed prop="id" label="编号"> </el-table-column>
+				<el-table-column  prop="user.id" label="用户编号"> </el-table-column>  
+				<el-table-column  prop="user.name" label="用户姓名"> </el-table-column> 
+				<el-table-column  prop="drug.id" label="药品编号"> </el-table-column> 
+				<el-table-column  prop="drug.name" label="药品名称"> </el-table-column> 
+				<el-table-column prop="drug.price" label="药品价格"> </el-table-column> 
+				<el-table-column  prop="worker.id" label="医生编号"> </el-table-column> 
+				<el-table-column prop="worker.name" label="医生姓名"> </el-table-column> 
+				<el-table-column  prop="number" label="数量"> </el-table-column> 
+				<el-table-column  label="操作">
+					<template slot-scope="scope">
+						<el-button  v_if="pass" @click="passApply(scope.row)" type="primary" plain size="small" >申请通过</el-button><br>  	
+						<el-button   @click="nopassApply(scope.row)" type="primary" plain size="small" >撤销申请</el-button>
+					</template>
+				</el-table-column> 
+		</el-table>
+	</div>
+	<script type="text/javascript">
+	new Vue({
+		el:"#app",
+		data:{
+			pass:false,
+			ask:false,
+			show:false,
+			returnDrugList:[],
+			returnDrug:{
+				id:null,
+				uId:null,
+				number:"",
+				drId:null,
+				wId:null,
+				user:{},
+				drug:{},
+				worker:{},
+				status:"",
+			},
+		},
+		created:function(){
+			this.selectData();
+			this.selectButton();
+		},
+		methods:{
+			selectButton:function(){
+				var href=location.href;
+				var pid=href.split("?")[1].split("=")[1];
+				//发送请求
+				var _this=this;
+				$.ajax({
+					url:"/workers/button",
+					data:{pid:pid},
+					success:function(data){
+						if(data.code="200"){
+							for(var i=0;i<data.list.length;i++){
+								if(data.list[i].name=="已审核药品"){
+									_this.pass=true;
+								}
+							}
+						}
+					}
+				});
+			},
+			selectData:function(){
+				var _this=this;
+				$.ajax({
+					url:"/nurse/returnDrug",
+					success:function(data){
+						if(data.code==200){
+							_this.returnDrugList=data.list;
+						}
+					}
+				});
+			},
+			//点击通过，将退药表对象状态改为1；
+			passApply:function(returnDrug){
+				var _this=this;
+				returnDrug.status=1;
+				_this.reviewApply(returnDrug);
+			},
+			//点击撤销，将退药表对象状态改为2；
+			nopassApply:function(returnDrug){
+				var _this=this;
+				returnDrug.status=2;
+				_this.reviewApply(returnDrug);
+			},
+			reviewApply:function(returnDrug){
+				var _this=this;
+				$.ajax({
+					url:"/nurse/reviewReturnDrug",
+					type:"put",
+					contentType:"application/json;charset=utf-8",
+					data:JSON.stringify(returnDrug),
+					success:function(data){
+						if(data.code==200){
+							_this.selectData();
+						}
+					}
+				});
+			},
+		},
+	})
+	</script>
+</body>
+</html>

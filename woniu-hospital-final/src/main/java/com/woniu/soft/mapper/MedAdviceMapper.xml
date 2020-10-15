@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woniu.soft.mapper.MedAdviceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.woniu.soft.entity.MedAdvice">
+        <id column="id" property="id" />
+        <result column="u_id" property="uId" />
+        <result column="w_id" property="wId" />
+        <result column="status" property="status" />
+        <result column="creat_time" property="creatTime" />
+        <result column="p_total" property="pTotal" />
+        <result column="d_total" property="dTotal" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, u_id, w_id, status, creat_time, p_total, d_total
+    </sql>
+	 <!-- 查询该用户所有医疗项目费用 -->
+	<select id="selectSumPtotal" resultType="int">
+		SELECT SUM(p_total) from med_advice where u_id=#{id}
+	</select>
+	<select id="selectSumDtotal" resultType="int">
+		SELECT SUM(d_total) from med_advice where u_id=#{id}
+	</select>
+</mapper>

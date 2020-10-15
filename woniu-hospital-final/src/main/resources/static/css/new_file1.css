@@ -1,0 +1,155 @@
+* {
+	margin: 0px;
+
+}
+a{
+	text-decoration:none;
+	font-size: 20px;
+	color: whitesmoke;
+}
+#nav {
+	margin: 0px 0% 0 0%;
+	background-color: #e6e9ef;
+}
+
+#app {
+	margin: 0px 3% 0 3%;
+	padding-top: 0px;
+}
+
+.el-menu{
+	border: 0px ;
+	background-color: #323585;
+}
+
+.el-header {
+	width: 100%;
+	padding: 0;
+	border-radius: 0px !important
+}
+.dingbu{
+	width: 100%;
+	height: 55px;
+	color: white;
+	font-size: 25px;
+	background-color: #323585;
+	line-height: 30px;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+.el-submenu__title{
+	background-color: #323585;	
+	color: powderblue;
+	font-size: 20px;
+	margin-left: 10px;
+	border-top-left-radius: 30px;
+	border-bottom-left-radius: 30px;
+	background-color: #323585 !important
+}
+.el-menu-item{
+	color: whitesmoke;
+	background-color: #323585;
+	margin-left: 10px;
+	font-size: 18px;
+	border-top-left-radius: 30px;
+	border-bottom-left-radius: 30px;
+	background-color: #323585 !important
+}
+
+.el-menu-item.is-active {
+	color: whitesmoke;
+	background-image: linear-gradient(to right, #87b1f9, #e6e9f0);
+	margin-left: 10px;
+	border-top-left-radius: 30px;
+	border-bottom-left-radius: 30px;
+	border-bottom-right-radius: 1px;
+	border-top-right-radius: 1px;
+	background-color: white !important
+}
+
+.el-aside {
+	margin-top: 20px;
+	background-color: #323585;
+    text-align: center;
+	border-radius: 20px;
+	height: 500px;
+	margin-right: 10px;
+}
+#mokuaiming{
+	
+	width: 100%;
+	height: 60px;
+	line-height: 60px;
+}
+.el-main {
+
+	height: 900px;
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	color: #333;
+	padding-top: 0px;
+	text-align: center;
+}
+.main-ding{
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	width: 90%;
+	height: 60px;
+	margin-left: 5%;
+	background-color: #323585;
+}
+
+#out a{
+	font-size: 15px;
+}
+
+.el-row {
+	margin-bottom: 0px;
+	&:last-child {
+	  margin-bottom: 0;
+}
+}
+.el-col {
+	margin-top: 10px;
+	border-radius: 4px;
+}
+
+.bg-purple {
+	background-color: #323585;
+}
+
+.el-table{
+  margin-top: 50px;
+ 
+  background-color: #000000;
+}
+#apps{
+  width: 100%;
+  height: 100%;
+}
+iframe{
+scrolling: no;
+width: 100%;
+
+}
+body{
+	overflow：hidden
+}
+
+.el-table .cell {
+  text-align: center;
+}
+.tables{
+	margin-top: 50px;
+	
+}
+
+.el-button{
+	margin-bottom: 5px;
+}
+.el-input__inner{
+	width: 50%;
+}

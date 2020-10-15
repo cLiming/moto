@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>护理记录</title>
+<script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="/js/vue.js"></script>
+<!-- 引入样式 -->
+<link rel="stylesheet"
+	href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+	<div id="app">
+		<el-table :data="list" border style="width: 100%"> 
+				<el-table-column fixed prop="id" label="编号"> </el-table-column> 
+				<el-table-column  prop="name" label="姓名"> </el-table-column> 
+				<el-table-column  prop="sex" label="性别"> </el-table-column> 
+				<el-table-column  prop="age" label="年龄"> </el-table-column> 
+				<el-table-column prop="idCard" label="身份证号"> </el-table-column> 
+				<el-table-column  prop="doctor" label="医生"> </el-table-column> 
+				<el-table-column prop="tel" label="电话"> </el-table-column> 
+				<el-table-column  prop="deptId" label="科室"> </el-table-column> 
+				<el-table-column  prop="bedId" label="床位号"> </el-table-column> 
+				<el-table-column  label="操作">
+					<template slot-scope="scope">
+						<el-button v-if="insertButton"  @click="showInsertLog(scope.row.id)" type="text" size="small">新增护理记录</el-button> <br>
+						<el-button v-if="updateButton" @click="showUpdateLog(scope.row.id)"type="text" size="small">修改护理记录</el-button> <br>
+						<el-button v-if="setUserInfo" @click="UserInfo(scope.row)"type="text" size="small">修改患者信息</el-button>
+					</template>
+				</el-table-column> 
+		</el-table>
+		<el-dialog title="新增护理记录" :visible.sync="insertLogVisible" width="40%">
+			<el-form :model="pio"  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+				  <el-form-item label="护理内容" prop="name">
+				    <el-input v-model="pio.text"></el-input>
+				  </el-form-item>
+				  <el-form-item label="护理类型" prop="region">
+				    <el-select v-model="pio.type">
+				      <el-option label="一般护理" value="1"></el-option>
+				      <el-option label="危重症护理" value="2"></el-option>
+				      <el-option label="特殊护理" value="3"></el-option>
+				    </el-select>
+				  </el-form-item>
+			</el-form>
+			<span slot="footer" class="dialog-footer"> 
+				<el-button
+					@click="insertLogVisible = false">取 消</el-button> 
+				<el-button
+					type="primary" @click="insertLog">新增</el-button>
+			</span> 
+		</el-dialog> 
+		<el-dialog title="修改护理记录" :visible.sync="updateLogVisible" width="80%">	
+			<el-table :data="pios" border style="width:100%"> 
+				<el-table-column fixed prop="id" label="护理编号"> </el-table-column> 
+				<el-table-column  prop="uid" label="用户编号"> </el-table-column> 
+				<el-table-column  prop="text" label="护理内容"> </el-table-column> 
+				<el-table-column  prop="type" label="护理类型"> </el-table-column> 
+				<el-table-column  label="操作">
+					<template slot-scope="scope">
+						<el-button  @click="showPio(scope.row)"type="text" size="small">修改</el-button>
+					</template>
+				</el-table-column> 
+			</el-table>
+			<span slot="footer" class="dialog-footer">
+				 <el-button
+						type="primary" @click="updateLogVisible = false">关 闭</el-button>
+			</span> 
+		</el-dialog> 
+		<el-dialog title="修改患者信息" :visible.sync="userInfoVisible" width="40%">
+			<el-form :model="user"  label-width="100px" class="demo-ruleForm">
+				  <el-form-item label="姓名" prop="name">
+				    <el-input v-model="user.name"></el-input>
+				  </el-form-item>
+				  <el-form-item label="性别" prop="region">
+				    <el-select v-model="user.sex">
+				      <el-option label="男" value="1"></el-option>
+				      <el-option label="女" value="2"></el-option>
+				    </el-select>
+				  </el-form-item>
+				  <el-form-item label="年龄" prop="name">
+				    <el-input v-model="user.age"></el-input>
+				  </el-form-item>
+				  <el-form-item label="身份证号" prop="name">
+				    <el-input v-model="user.idCard"></el-input>
+				  </el-form-item>
+				  <el-form-item label="医生姓名" prop="name">
+				    <el-input v-model="user.doctor"></el-input>
+				  </el-form-item>
+				  <el-form-item label="电话" prop="name">
+				    <el-input v-model="user.tel"></el-input>
+				  </el-form-item>
+				  <el-form-item label="科室" prop="name">
+				    <el-input v-model="user.deptId"></el-input>
+				  </el-form-item>
+				  <el-form-item label="床位编号" prop="name">
+				    <el-input v-model="user.bedId"></el-input>
+				  </el-form-item>
+			</el-form>
+			<span slot="footer" class="dialog-footer"> 
+				<el-button
+					@click="UserInfoVisible = false">取 消</el-button> 
+				<el-button
+					type="primary" @click="updateUserInfo">修改</el-button>
+			</span> 
+		</el-dialog> 
+		<el-dialog title="修改" :visible.sync="showOnePioVisible" width="40%">
+			<el-form :model="pio"  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+				  <el-form-item label="护理内容" >
+				    <el-input v-model="pio.text"></el-input>
+				  </el-form-item>
+				  <el-form-item label="护理类型" >
+				    <el-select v-model="pio.type">
+				      <el-option label="一般护理" value="1"></el-option>
+				      <el-option label="危重症护理" value="2"></el-option>
+				      <el-option label="特殊护理" value="3"></el-option>
+				    </el-select>
+				  </el-form-item>
+			</el-form>
+			<span slot="footer" class="dialog-footer"> 
+				<el-button
+					@click="showOnePioVisible = false">取 消</el-button> 
+				<el-button
+					type="primary" @click="submitLog">提交</el-button>
+			</span> 
+		</el-dialog>
+	</div>
+	<script type="text/javascript">
+		new Vue({
+			el:"#app",
+			data:{
+				list:[],
+				insertButton:false,
+				updateButton:false,
+				setUserInfo:false,
+				updateLogVisible:false,	//修改模态框
+				insertLogVisible:false,//新增模态框
+				userInfoVisible:false,
+				showOnePioVisible:false,
+				pio:{
+					id:"",
+					text:"",
+					type:"",
+					uid:0,
+				},
+				pios:[],
+				user:{
+					id:"",
+					name:"",
+					sex:null,
+					age:null,
+					idCard:"",
+					doctor:null,
+					tel:"",
+					deptId:null,
+					bedId:null,
+				}
+			},
+			created:function(){
+				this.selectData();
+				this.selectButton();
+			},
+			methods:{
+				selectData:function(){
+					var _this=this;
+					$.ajax({
+						url:"/nurse",
+						success:function(data){
+							if(data.code==200){
+								_this.list=data.list;
+							}
+						}
+					});
+				},
+				selectButton:function(){
+					var href=location.href;
+					var pid=href.split("?")[1].split("=")[1];
+					//发送请求
+					var _this=this;
+					
+					$.ajax({
+						url:"/workers/button",
+						data:{pid:pid},
+						success:function(data){
+							if(data.code="200"){
+								for(var i=0;i<data.list.length;i++){
+									if(data.list[i].name=="新增护理记录"){
+										_this.insertButton=true;
+									}
+									if(data.list[i].name=="修改护理记录"){
+										_this.updateButton=true;
+									}
+									if(data.list[i].name=="修改患者信息"){
+										_this.setUserInfo=true;
+									}
+								}
+							}
+						}
+					});
+				},
+				showInsertLog:function(id){
+					this.insertLogVisible=true;
+					var _this=this;
+					_this.pio.uid=id;
+				},
+				insertLog:function(){
+					var _this=this;
+					$.ajax({
+						url:"/nurse",
+						type:"post",
+						data:_this.pio,
+						success:function(data){
+							if(data.code=="200"){
+								alert("新增护理记录成功");
+								_this.insertLogVisible=false;
+								_this.pio="";
+								_this.selectData();
+							}
+						}
+					});
+				},
+				showUpdateLog:function(id){
+					this.updateLogVisible=true;
+					var _this=this;
+					_this.pio.uid=id;
+					$.ajax({
+						url:"/nurse/"+id,
+						success:function(data){
+							if(data.code=="200"){
+								_this.pios=data.list;
+								for(var i =0;i<data.list.length;i++){
+									if(data.list[i].type==1){
+										data.list[i].type="一般护理"
+									}
+									if(data.list[i].type==2){
+										data.list[i].type="危重症护理"
+									}
+									if(data.list[i].type==3){
+										data.list[i].type="紧急护理"
+									}
+								/* 	if(data.list[i].status==0){
+										data.list[i].status="已执行"
+									}
+									if(data.list[i].status==1){
+										data.list[i].status="未执行"
+									} */
+								}
+							}
+						}
+					});
+				},
+				UserInfo:function(user){
+					this.userInfoVisible=true;
+					var _this=this;
+					_this.user=user;
+				},
+				updateUserInfo:function(){
+					var _this=this;
+					$.ajax({
+						url:"/nurse",
+						type:"put",
+						data:_this.user,
+						success:function(data){
+							if(data.code=="200"){
+								alert("修改患者信息成功");
+								_this.userInfoVisible=false;
+								_this.user="";
+							}
+						}
+					});
+				},
+				showPio:function(pio){
+					this.showOnePioVisible=true;
+					var _this=this;
+					_this.pio=pio;
+				},
+				submitLog:function(){
+					var _this=this;
+					if(_this.pio.type=="一般护理"){
+						_this.pio.type=1
+					}
+					if(_this.pio.type=="危重症护理"){
+						_this.pio.type=2
+					}
+					if(_this.pio.type=="紧急护理"){
+						_this.pio.type=3
+					}
+					$.ajax({
+						url:"/nurse/pio",
+						type:"put",
+						data:_this.pio,
+						success:function(data){
+							if(data.code=="200"){
+								alert("修改护理记录成功");
+								if(_this.pio.type==1){
+									_this.pio.type="一般护理"
+								}
+								if(_this.pio.type==2){
+									_this.pio.type="危重症护理"
+								}
+								if(_this.pio.type==3){
+									_this.pio.type="紧急护理"
+								}
+								_this.showOnePioVisible=false;
+								_this.pio="";
+							}
+						}
+					});
+				}
+				
+			}
+		});
+	</script>
+</body>
+</html>

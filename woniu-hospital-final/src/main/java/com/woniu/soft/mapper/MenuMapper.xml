@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woniu.soft.mapper.MenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.woniu.soft.entity.Menu">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="pid" property="pid" />
+        <result column="resource" property="resource" />
+        <result column="level" property="level" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, pid, resource, level
+    </sql>
+    
+    	<!--查询用户所有的权限-->
+  <select id="selectPermissions"  resultMap="BaseResultMap">
+  	SELECT M.* FROM workers w LEFT JOIN ROLE_PERMISSION RP ON w.R_ID=RP.RID INNER JOIN MENU M ON RP.MID=M.ID WHERE w.ID=#{worker.id}
+  </select>
+  <!--根据用户查询1级2级菜单-->
+  <select id="selectMenu" resultMap="BaseResultMap">
+	SELECT M.* FROM workers w LEFT JOIN ROLE_PERMISSION RP ON w.R_ID=RP.RID INNER JOIN MENU M ON RP.MID=M.ID WHERE w.ID=#{id} AND M.LEVEL&lt;3
+  </select>
+  <!--根据用户id和父级id查询3级按钮菜单-->
+  <select id="selectBUttonById" resultMap="BaseResultMap">
+  	SELECT M.* FROM workers w LEFT JOIN ROLE_PERMISSION RP ON w.R_ID=RP.RID INNER JOIN MENU M ON RP.MID=M.ID WHERE w.ID=#{id} AND M.LEVEL=3 and m.pid=#{pid}
+  </select>
+
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woniu.soft.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.woniu.soft.entity.User">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="sex" property="sex" />
+        <result column="age" property="age" />
+        <result column="id_card" property="idCard" />
+        <result column="doctor" property="doctor" />
+        <result column="password" property="password" />
+        <result column="nurse" property="nurse" />
+        <result column="tel" property="tel" />
+        <result column="status" property="status" />
+        <result column="dept_id" property="deptId" />
+        <result column="bed_id" property="bedId" />
+        <result column="balance" property="balance" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, sex, age, id_card, doctor, password, nurse, tel, status, dept_id, bed_id, balance
+    </sql>
+
+</mapper>

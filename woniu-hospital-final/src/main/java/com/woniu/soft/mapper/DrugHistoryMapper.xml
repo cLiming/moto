@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woniu.soft.mapper.DrugHistoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.woniu.soft.entity.DrugHistory">
+        <id column="id" property="id" />
+        <result column="drug_id" property="drugId" />
+        <result column="number" property="number" />
+        <result column="status" property="status" />
+        <result column="date" property="date" />
+        <result column="u_id" property="uId" />
+        <result column="w_id" property="wId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, drug_id, number, status, date, u_id, w_id
+    </sql>
+
+</mapper>
