@@ -21,8 +21,7 @@ public class PresDrug implements Serializable {
     private Integer id;
 
     private Integer presId;
-    
-    @TableField(value = "drugId")
+
     private Integer drId;
 
     private Integer number;
