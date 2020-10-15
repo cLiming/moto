@@ -6,7 +6,9 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.woniu.soft.entity.Drug;
 import com.woniu.soft.entity.DrugEntity;
@@ -56,6 +58,24 @@ public class DrugServiceImpl extends ServiceImpl<DrugMapper, Drug> implements Dr
 	@Override
 	public List<DrugEntity> selectDrugEntity(Integer id) throws Exception {
 		return drugMapper.selectDrugEntity(id);
+	}
+
+
+	@Override
+	public Page selectDrugs(Integer id, String name, Integer pageIndex, Integer PageNum) throws Exception {
+		QueryWrapper<Drug> wrapper = new QueryWrapper<Drug>();
+		Page<Drug> page = new Page<Drug>(pageIndex,PageNum);
+		if(id==0&&name.equals("")) {
+			return this.page(page);
+		}else {
+			if(id!=0) {
+				wrapper.eq("id", id);
+			}
+			if(!name.equals("")) {
+				wrapper.likeRight(true,"name", name);
+			}
+			return this.page(page, wrapper);
+		}
 	}
 
 
