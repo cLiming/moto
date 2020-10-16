@@ -26,8 +26,8 @@
 						<el-button icon="el-icon-edit" @click="outerVisible = true">新增出院申请</el-button>
 							<el-dialog title="新增申请" :visible.sync="outerVisible">
 								<el-form label-width="100px" class="demo-ruleForm">
-									<el-form-item label="" >
-										<el-select placeholder="请选择病人"  v-model="ss.id">
+									<el-form-item label="" label-width="100px">
+										<el-select style="width:200px" placeholder="请选择病人" v-model="ss.id" >
 											<el-option  v-for="items in ss" :key="items.id" :label="items.name"
 														:value="items.id">
 

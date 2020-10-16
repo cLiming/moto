@@ -76,6 +76,7 @@ public class ShiroConfig {
 		// 配置不会被拦截地址规则
 		// anon:所有的url都可以不登陆的情况下访问
 		// authc：所有url都必须认证通过才可以访问
+		filterChainDefinitionMap.put("/fonts/**", "anon");
 		filterChainDefinitionMap.put("/js/**", "anon");
 		filterChainDefinitionMap.put("/css/**", "anon");
 		filterChainDefinitionMap.put("/lib/**", "anon");

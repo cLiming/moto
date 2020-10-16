@@ -26,7 +26,7 @@
 								<el-dialog title="新增医嘱" :visible.sync="outerVisible">
 									<el-form :model="lists" :rules="rules" ref="lists" label-width="100px" class="demo-ruleForm">
 										<el-form-item label="患者姓名" prop="name">
-										<el-select v-model="lists.uId" placeholder="请选择患者" >
+										<el-select v-model="lists.uId" placeholder="请选择患者" style="width:200px">
 											<el-option  v-for="item in tableData" :key="item.id" :label="item.name"
 													:value="item.id"></el-option>
 											</el-select>
@@ -115,7 +115,7 @@
 						</el-table-column>
 						<el-table-column property="name" label="姓名" :formatter="formatterName" width="100">
 						</el-table-column>
-						<el-table-column property="sex" label="性别" :formatter="formatter" width="100">
+						<el-table-column property="sex" label="性别" :formatter="formatterSex" width="100">
 						</el-table-column>
 						<el-table-column property="age" label="年龄" width="80" :formatter="formatterAge">
 						</el-table-column>
@@ -207,7 +207,6 @@
 					},
 					lists:{
 						uId: '',
-						wId: '3',
 						adviceinfo:[],
 						prescription:{
 							adId:'',
@@ -223,7 +222,7 @@
 					},
 					uplists:{
 						uId: '',
-						wId: '3',
+
 						adviceinfo:[],
 						prescription:{
 							adId:'',
@@ -269,22 +268,25 @@
 
 			},
 			created(){
-				axios.get("/doc/info").then(data => {
-					if (data.data.code == "200") {
-						this.tableData=data.data.obj.userList;
-						this.projectLists=data.data.obj.projectList;
-						this.drugLists=data.data.obj.drugList;
-					}
-				});
-				<!--这里分页是写死的-->
-				axios.get("/doc/selectAd?pageIndex="+this.pageInfo.pageIndex+"&pageNum="+this.pageInfo.pageNum).then(data => {
-					if (data.data.code == "200") {
-						this.tableDatas=data.data.obj.records;
-
-					}
-				});
+				this.res();
 			},
 			methods: {
+				res(){
+					this.tableDatas=''
+					axios.get("/doc/info").then(data => {
+						if (data.data.code == "200") {
+							this.tableData=data.data.obj.userList;
+							this.projectLists=data.data.obj.projectList;
+							this.drugLists=data.data.obj.drugList;
+						}
+					});
+					<!--这里分页是写死的-->
+					axios.get("/doc/selectAd?pageIndex="+this.pageInfo.pageIndex+"&pageNum="+this.pageInfo.pageNum).then(data => {
+						if (data.data.code == "200") {
+							this.tableDatas=data.data.obj.records;
+						}
+					});
+				},
 				handleEdit(index, row) {
 					this.dialogVisible = true;
 					this.uplists=row
@@ -315,8 +317,12 @@
 
 					axios.get("/doc/deleteAd?id="+row.id).then(data => {
 						if (data.data.code == "200") {
-							alert("删除成功！")
+							this.$message({
+								message: '医嘱删除成功',
+								type: 'success',
 
+							});
+							this.res();
 						}
 					});
 				},
@@ -326,6 +332,7 @@
 					},
 				resetForm(formName) {
 					this.$refs[formName].resetFields();
+					this.dialogVisible=false;
 				},
 				removeDomain(item) {
 					var index = this.lists.prescription.presDrugs.indexOf(item)
@@ -354,6 +361,8 @@
 								type: 'success',
 
 							});
+							this.res();
+							this.dialogVisible=false;
 						}
 					});
 
@@ -392,14 +401,13 @@
 					this.medAdvice=this.lists;
 					this.pIds=[];
 					axios.post("/doc", this.medAdvice).then(data => {
-
 						if (data.data.code == "200") {
-
 							this.$message({
 								message: '医嘱新增成功',
 								type: 'success',
-
-								});
+							});
+							this.res();
+							this.outerVisible = false;
 							}
 						});
 					this.lists.adviceinfo=[];
@@ -409,37 +417,39 @@
 				},
 				formatters(tableDatas){
 					for (let i=0;i<this.projectLists.length;i++) {
-						if(tableDatas.deptId==this.projectLists[i].id){
+						if(tableDatas.deptId===this.projectLists[i].id){
 							return this.projectLists[i].projectName;
 						}
 					}
 				},
 				formatterName(tableDataName){
 					for (let i=0;i<this.tableDatas.length;i++) {
-							if(tableDataName.uId==this.tableData[i].id){
+							if(tableDataName.uId===this.tableData[i].id){
 								return this.tableData[i].name;
+						}
+					}
+				},
+				formatterSex(tableDataSex){
+					for (let i=0;i<this.tableDatas.length;i++) {
+						if(tableDataSex.uId===this.tableData[i].id){
+							return this.tableData[i].sex;
 						}
 					}
 				},
 				formatterTel(tableDataTel){
 					for (let i=0;i<this.tableDatas.length;i++) {
-						if(tableDataTel.uId==this.tableData[i].id){
+						if(tableDataTel.uId===this.tableData[i].id){
 							return this.tableData[i].tel;
 						}
 					}
 				},
 				formatterAge(tableDataAge){
 					for (let i=0;i<this.tableDatas.length;i++) {
-						if(tableDataAge.uId==this.tableData[i].id){
+						if(tableDataAge.uId===this.tableData[i].id){
 							return this.tableData[i].age;
 						}
 					}
 				},
-				//前端判断男女方法
-				formatter(tableData) {
-					return tableData.sex === 1 ? "男" : "女";
-				},
-
 			}
 		});
 	</script>

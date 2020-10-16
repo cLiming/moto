@@ -62,6 +62,7 @@ public class DoctorController {
 		Workers workers = (Workers) subject.getPrincipal();
 		Integer wid=workers.getId();
 		Page<MedAdvice> page = maService.selectByWidLimit(wid, pageIndex, pageNum);
+		System.out.println("当前登陆的wid是"+wid);
 		List<MedAdvice> list = page.getRecords();
 		if (list != null) {
 			for (MedAdvice medAdvice : list) {
@@ -128,6 +129,10 @@ public class DoctorController {
 	// 新增医嘱
 	@PostMapping
 	public JSONResult saveMedAdvice(@RequestBody MedAdvice medAdvice) throws Exception {
+		Subject subject = SecurityUtils.getSubject();
+		Workers workers = (Workers) subject.getPrincipal();
+		Integer wid=workers.getId();
+		medAdvice.setwId(wid);
 		maService.save(medAdvice);
 		Prescription prescription = medAdvice.getPrescription();
 		double pPrice = 0;
@@ -247,6 +252,10 @@ public class DoctorController {
 	// 录入病案CaseHistory
 	@RequestMapping("/insertCase")
 	public JSONResult saveCaseHistory(@RequestBody CaseHistory caseHistory) throws Exception {
+		Subject subject = SecurityUtils.getSubject();
+		Workers workers = (Workers) subject.getPrincipal();
+		Integer wid=workers.getId();
+		caseHistory.setwId(wid);
 		chService.save(caseHistory);
 		return new JSONResult("200", "success", null, null);
 	}
