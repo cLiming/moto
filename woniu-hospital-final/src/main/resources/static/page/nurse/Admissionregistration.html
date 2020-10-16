@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>护士页面</title>
+<script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="/js/vue.js"></script>
+<!-- 引入样式 -->
+<link rel="stylesheet"
+	href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+	<div id="app">
+		<el-table :data="list" border style="width: 100%">
+		<el-table-column fixed prop="id" label="编号"> </el-table-column>
+		<el-table-column prop="name" label="姓名"> </el-table-column> 
+		<el-table-column prop="sex" label="性别"> </el-table-column> 
+		<el-table-column prop="age" label="年龄"> </el-table-column> 
+		<el-table-column prop="idCard" label="身份证号"> </el-table-column> 
+		<el-table-column prop="tel" label="电话"> </el-table-column> 
+		<el-table-column prop="deptId" label="科室"> </el-table-column> 
+		<el-table-column prop="doctor" label="医生"></el-table-column> 
+		<el-table-column prop="nurse" label="护士"></el-table-column> 
+		<el-table-column prop="bedId" label="床位号"></el-table-column>
+		<el-table-column label="操作">
+		<template slot-scope="scope">
+			<el-button v-if="selectDoctor" @click="selectAllDocotor(scope.row.id)" type="text"
+				size="small">选择医生</el-button>
+			<br>
+			<el-button v-if="selectNurse" @click="selectAllNurse(scope.row.id)" type="text"
+				size="small">选择护士</el-button>
+			<br>
+			<el-button v-if="selectBed" @click="selectAllBed(scope.row.id)" type="text"
+				size="small">选择床位</el-button>
+			<br>
+		</template>
+		</el-table-column> 
+		<el-table-column label="审核">
+		<template slot-scope="scope">
+			<el-button v-if="selectDoctor" @click="updataAdmissionRegistration(scope.row)" 
+				size="small">通过</el-button>
+			<br>
+			<el-button v-if="selectNurse" @click="selectUser" 
+				size="small">不通过</el-button>
+			<br>
+		</template>
+		</el-table-column> 
+		</el-table>
+		<el-dialog title="选择医生" :visible.sync="selectDocotorDialogVisible"
+			width="40%"> <el-form :model="allDoctors"
+			label-width="100px" class="demo-ruleForm">
+		<template>
+  			<el-radio-group v-model="docotors.id">
+    		<el-radio :label="docotors.id" v-for="docotors in allDoctors">{{docotors.name}}</el-radio>
+  			</el-radio-group>
+		</template>
+		</el-form> <span slot="footer" class="dialog-footer"> <el-button
+				@click="selectDocotorDialogVisible = false">取 消</el-button> <el-button
+				type="primary" @click="updataUserDoctor">添加</el-button>
+		</span> </el-dialog>
+		<el-dialog title="选择护士" :visible.sync="selectNurseDialogVisible"
+			width="40%"> 
+			<el-form :model="allNurse" label-width="100px" class="demo-ruleForm">
+		<template>
+  			<el-radio-group v-model="nurses.id">
+    		<el-radio :label="nurses.id" v-for="nurses in allNurse">{{nurses.name}}</el-radio>
+  			</el-radio-group>
+		</template>
+		</el-form> <span slot="footer" class="dialog-footer"> <el-button
+				@click="selectNurseDialogVisible = false">取 消</el-button> <el-button
+				type="primary" @click="updataUserNurse">添加</el-button>
+		</span> </el-dialog>
+		<el-dialog title="选择床位" :visible.sync="selectBedDialogVisible"
+			width="40%"> 
+			<el-form :model="allBed" label-width="100px" class="demo-ruleForm">
+		<template>
+  			<el-radio-group v-model="beds.id">
+    		<el-radio :label="beds.id" v-for="beds in allBed">{{beds.bedName}}</el-radio>
+  			</el-radio-group>
+		</template>
+		</el-form> <span slot="footer" class="dialog-footer"> <el-button
+				@click="selectNurseDialogVisible = false">取 消</el-button> <el-button
+				type="primary" @click="updataUserBed">添加</el-button>
+		</span> </el-dialog>
+	</div>
+	<script type="text/javascript">
+		new Vue({
+			el : "#app",
+			data : {
+				list : [],
+				user : {
+					id:"",
+					name : "",
+					doctor:"",
+					nurse:"",
+					bedId:""
+				},
+				selectBedDialogVisible:false,
+				allDoctors : [],
+				allNurse : [],
+				permission : [],
+				docotors : {
+					id:"",
+					name:""
+				},
+				allBed:[],
+				beds : {
+					id:"",
+					name:""
+				},
+				nurses : {
+					id:"",
+					name:""
+				},
+				selectDoctor : false,
+				selectNurse : false,
+				selectBed : false,
+				selectDocotorDialogVisible : false,
+				selectNurseDialogVisible :false,
+			},
+			created : function() {
+				this.selectUser();
+				this.selectButton();
+			},
+			methods : {
+				selectUser : function() {
+					var _this = this;
+					$.ajax({
+						url : "/nurse/Admissionregistration",
+						data : {
+							user : _this.user
+						},
+						success : function(data) {
+							if (data.code == 200) {
+								_this.list = data.list;
+							}
+						}
+					});
+				},
+				selectButton : function() {
+					var href = location.href;
+					var pid = href.split("?")[1].split("=")[1];
+					//发送请求
+					var _this = this;
+					$.ajax({
+						url : "/workers/button",
+						data : {
+							pid : pid
+						},
+						success : function(data) {
+							if (data.code = "200") {
+								for (var i = 0; i < data.list.length; i++) {
+									if (data.list[i].name == "选择医生") {
+										_this.selectDoctor = true;
+									}
+									if (data.list[i].name == "选择护士") {
+										_this.selectNurse = true;
+									}
+									if (data.list[i].name == "选择床位") {
+										_this.selectBed = true;
+									}
+								}
+							}
+						}
+					});
+				},
+				selectAllDocotor : function(id) {
+					var _this = this;
+					_this.user.id=id;
+					$.ajax({
+						url : "/nurse/getAllDocotor",
+						data:_this.user,
+						success : function(data) {
+							if (data.code = "200") {
+								_this.selectDocotorDialogVisible = true;
+								_this.allDoctors = data.list;
+							}
+						}
+					});
+				},
+				selectAllBed: function(id) {
+					var _this = this;
+					_this.user.id=id;
+					$.ajax({
+						url : "/nurse/getAllDocotor",
+						data:_this.user,
+						success : function(data) {
+							if (data.code = "200") {
+								_this.selectDocotorDialogVisible = true;
+								_this.allDoctors = data.list;
+							}
+						}
+					});
+				},
+				selectAllNurse : function(id) {
+					var _this = this;
+					_this.user.id=id;
+					$.ajax({
+						url : "/nurse/getAllNurse",
+						data:_this.user,
+						success : function(data) {
+							if (data.code = "200") {
+								_this.selectNurseDialogVisible = true;
+								_this.allNurse = data.list;
+							}
+						}
+					});
+				},
+				updataUserNurse:function(){
+					var _this = this;
+					_this.user.nurse=_this.nurses.id;
+					alert(_this.user.nurse);
+					$.ajax({
+						url : "/nurse/updataUserNurse",
+						data : _this.user,
+						type:"post",
+						success : function(data) {
+							if (data.code = "200") {
+								alert("添加护士成功");
+								_this.selectNurseDialogVisible = false;
+								_this.selectUser();
+							}
+						}
+					});
+				},
+				selectAllBed: function(id) {
+					var _this = this;
+					_this.user.id=id;
+					$.ajax({
+						url : "/nurse/getAllBed",
+						data:_this.user,
+						success : function(data) {
+							if (data.code = "200") {
+								_this.selectBedDialogVisible = true;
+								_this.allBed = data.list;
+							}
+						}
+					});
+				},
+				updataUserBed:function(){
+					var _this = this;
+					_this.user.bedId=_this.beds.id;
+					$.ajax({
+						url : "/nurse/updataUserBed",
+						data : _this.user,
+						type:"post",
+						success : function(data) {
+							if (data.code = "200") {
+								alert("添加床位成功");
+								_this.selectBedDialogVisible = false;
+								_this.selectUser();
+							}
+						}
+					});
+				},
+				updataUserDoctor:function(){
+					var _this = this;
+					_this.user.doctor=_this.docotors.id;
+					$.ajax({
+						url : "/nurse/updataUserDocotors",
+						data : _this.user,
+						type:"post",
+						success : function(data) {
+							if (data.code = "200") {
+								alert("添加医生成功");
+								_this.selectDocotorDialogVisible = false;
+								_this.selectUser();
+							}
+						}
+					});
+				},
+				updataAdmissionRegistration:function(users){
+					var _this = this;
+					_this.user=users;
+					if(_this.user.doctor!=""&&_this.user.doctor!=null&&_this.user.nurse!=""&&_this.user.nurse!=null&&_this.user.bedId!=""&&_this.user.bedId!=null){
+						$.ajax({
+							url : "/nurse/updataAdmissionRegistration",
+							data : _this.user,
+							type:"post",
+							success : function(data) {
+								if (data.code = "200") {
+									alert("审核通过");
+									_this.selectUser();
+								}
+							}
+						});
+					}else{
+						alert("医生、护士、或者床位不能为空");
+						_this.selectUser();
+					}
+					
+				}
+			}
+		});
+	</script>
+</body>
+</html>

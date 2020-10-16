@@ -20,6 +20,8 @@ import com.woniu.soft.entity.Workers;
 import com.woniu.soft.service.NurseService;
 import com.woniu.soft.utils.JSONResult;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/nurse")
@@ -124,5 +126,71 @@ public class NurseController {
 	public JSONResult updateReturnDrug(@RequestBody ReturnApplication returnApplication) throws Exception {
 		nurseService.updateReturnDrug(returnApplication);
 		return new JSONResult("200","success",null,null);
+	}
+
+	//护士的入院登记开始。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。
+	//显示护士的入院登记功能的页面
+	@RequestMapping("Admissionregistration")
+	public JSONResult getregistration(User user) throws Exception{
+		//System.out.println("aaa"+nurseService.getregistration(user));
+		//System.err.println("nurseService.getregistration(user)"+nurseService.getregistration(user));
+		return new JSONResult("200","success",nurseService.getregistration(user),null);
+
+	}
+	//获取所有医生的信息
+	@RequestMapping("getAllDocotor")
+	public JSONResult getAllDocotor(User user) throws Exception{
+		return new JSONResult("200","success",nurseService.getAllDocotor(),null);
+	}
+
+	//获取所有护士的信息
+	@RequestMapping("getAllNurse")
+	public JSONResult getAllNurse(User user) throws Exception{
+		return new JSONResult("200","success",nurseService.getAllNurse(),null);
+	}
+	//获取所有空闲的床位
+	@RequestMapping("getAllBed")
+	public JSONResult getAllBed() throws Exception{
+		return new JSONResult("200","success",nurseService.getAllBed(),null);
+	}
+	//选择医生信息
+	@RequestMapping("updataUserDocotors")
+	public JSONResult updataUserDocotors(User user) throws Exception{
+		nurseService.updataUserDocotors(user);
+		return new JSONResult("200","success",null,null);
+	}
+	//修改用户护士信息
+	@RequestMapping("updataUserNurse")
+	public JSONResult updataUserNurse(User user) throws Exception{
+		System.out.println("nurse"+user);
+		nurseService.updataUserNurse(user);
+		return new JSONResult("200","success",null,null);
+	}
+	//修改用户床位信息
+	@RequestMapping("updataUserBed")
+	public JSONResult updataUserBed(User user) throws Exception{
+		nurseService.updataUserBed(user);
+		return new JSONResult("200","success",null,null);
+	}
+	//选择了这个床位 将这个床位的状态改为1
+	@PostMapping("{id}")
+	public JSONResult updataBedStatus(@PathVariable("id") int id) throws Exception{
+		nurseService.updataBedStatus(id);
+		return new JSONResult("200","success",null,null);
+	}
+	//按键点击  提交入院登记功能（审核通过）
+	@RequestMapping("updataAdmissionRegistration")
+	public JSONResult updataAdmissionRegistration(User user) throws Exception{
+		nurseService.updataAdmissionRegistration(user);
+		return new JSONResult("200","success",null,null);
+	}
+	//护士的入院登记结束。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。
+	//护士模块的医嘱开始。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。
+	//查询医嘱详情表、医嘱表、处方表、处方详情表、医疗项目表 显示到用户医嘱处理二级菜单上
+	//传入一个user对象 得到医嘱表和医嘱详情表的连查数据
+	@RequestMapping("adviceinfo")
+	public JSONResult getAdviceinfo(User user) throws Exception{
+		List<MedAdvice> getAdviceinfo = nurseService.getAdviceinfo(user);
+		return new JSONResult("200","success",getAdviceinfo,null);
 	}
 }

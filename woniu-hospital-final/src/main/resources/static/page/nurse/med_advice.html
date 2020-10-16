@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>护士页面</title>
+<script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="/js/vue.js"></script>
+<!-- 引入样式 -->
+<link rel="stylesheet"
+	href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+	<div id="app">
+	<h1>医嘱信息</h1>
+		<el-table :data="records" border style="width: 100%">
+			<el-table-column fixed prop="id" label="编号"> </el-table-column>
+			<el-table-column prop="uId" label="用户名"> </el-table-column> 
+			<el-table-column prop="wId" label="医生名"> </el-table-column> 
+			<el-table-column prop="creatTime" label="创建时间"> </el-table-column>
+			<el-table-column prop="pre.id" label="处方号"></el-table-column>
+			<el-table-column label="操作">
+			<template slot-scope="scope">
+				<el-row>
+				  <el-button @click="selectPreDrug(scope.row.pre.id)"
+					size="small">查询处方药品</el-button>
+				</el-row>
+				<br>
+				<el-button @click="updateMedAdvice(scope.row.id)"
+					size="small">完成</el-button>
+				<br>
+			</template>
+			</el-table-column> 
+		</el-table>
+		<el-dialog title="处方药品" :visible.sync="selectPreDrugDialogVisible"
+			width="40%">
+			<el-table :data="preUserDrugs" border style="width: 100%">
+				<el-table-column fixed prop="id" label="编号"> </el-table-column>
+				<el-table-column prop="presId" label="处方id"> </el-table-column> 
+				<el-table-column prop="drugId" label="药品名称"> </el-table-column> 
+				<el-table-column prop="number" label="数量"> </el-table-column>
+			</el-table>
+		</el-form> <span slot="footer" class="dialog-footer"> <el-button
+				@click="selectPreDrugDialogVisible = false">取 消</el-button> <el-button
+				type="primary" @click="updataPrescription">处方完成</el-button>
+		</span> </el-dialog>
+	</div>
+	<script type="text/javascript">
+		new Vue({
+			el : "#app",
+			data : {
+				page:{},
+				records:[],
+				user:{
+					id:"",
+					name:""
+				},
+				prescriptionButtonok:false,
+				workers:{
+					id:"",
+					name:""
+				},
+				prescription:{
+					id:""
+				},
+				medAdvice:{
+					id:""
+				},
+				preUserDrugs:[],
+				selectPreDrugDialogVisible:false,
+				allDrugs:[],
+			},
+			mounted : function() {
+				this.selectMedAdvice();
+				this.selectUser();
+				this.selectWorker();
+			},
+			methods:{
+				selectDrugs:function(){
+					var _this = this;
+					$.ajax({
+						url : "/drug/getDrugs",
+						success : function(data) {
+							_this.allDrugs=data.list;
+							//alert("哈哈哈哈哈哈哈");
+							for(var i=0;i<_this.preUserDrugs.length;i++){
+								for(var j=0;j<_this.allDrugs.length;j++){
+									if(_this.preUserDrugs[i].drugId=_this.allDrugs[j].id){
+										
+										_this.preUserDrugs[i].drugId=_this.allDrugs[j].name;
+									}
+								}
+							}
+						}
+					});
+				},
+				selectMedAdvice:function() {
+					var _this = this;
+					$.ajax({
+						url : "/medAdvice/getAdvice", //medAdvice/getAdvice
+						type:"post",
+						dataType:"json",
+						success : function(data) {
+							if (data.code == 200) {
+								_this.page=data.obj;
+								_this.records =data.obj.records;
+								_this.selectUser();
+								
+							} 
+						}
+					});
+				},
+				selectUser:function() {
+					var _this = this;
+					$.ajax({
+						url : "/user/getUser", 
+						type:"post",
+						data:_this.user,
+						success : function(data) {
+							if (data.code == 200) {
+								for(var i=0;i<_this.records.length;i++){
+									for(var j=0;j<data.list.length;j++){
+										if(data.list[j].id==_this.records[i].uId){
+											_this.records[i].uId=data.list[j].name;
+										}
+									}
+								}
+							} 
+						}
+					});
+				},
+				selectWorker:function() {
+					var _this = this;
+					$.ajax({
+						url : "/workers/getworker", 
+						type:"post",
+						data:_this.workers,
+						success : function(data) {
+							if (data.code == 200) {
+								for(var i=0;i<_this.records.length;i++){
+									for(var j=0;j<data.list.length;j++){
+										if(data.list[j].id==_this.records[i].wId){
+											_this.records[i].wId=data.list[j].name;
+										}
+									}
+								}
+							} 
+						}
+					});
+				},
+				selectPreDrug:function(id){
+					var _this=this;
+					_this.preUserDrugs=[],
+					_this.prescription.id=id;
+					
+					_this.selectPreDrugDialogVisible=true;
+					for(var i=0;i<_this.records.length;i++){
+						if(_this.records[i].pre!=null&&id==_this.records[i].pre.id){
+							for(v in _this.records[i].pre.presDrugs){
+								_this.preUserDrugs.push(_this.records[i].pre.presDrugs[v]);
+							}
+						}
+					}
+					_this.selectDrugs();
+				},
+				updataPrescription:function(){
+					var _this = this;
+					//alert(_this.prescription.id);
+					$.ajax({
+						url : "/prescription/updatePrescription", 
+						data:_this.prescription,
+						type:"post",
+						success:function(data) {
+							if (data.code == 200) {
+								alert("处方完成");
+								_this.selectPreDrugDialogVisible=false;
+								_this.selectMedAdvice();
+							} 
+						}
+					});
+				},
+				updateMedAdvice:function(id){
+					var _this=this;
+					_this.medAdvice.id=id;
+					for(var i=0;i<_this.records.length;i++){
+						if(_this.records[i].id==id){
+							if(_this.records[i].pre==null||_this.records[i].pre==""){
+								$.ajax({
+									url : "/medAdvice/updateAdvice", 
+									data:_this.medAdvice,
+									type:"post",
+									success:function(data) {
+										if (data.code == 200) {
+											alert("医嘱审核通过");
+											_this.selectMedAdvice();
+										} 
+									}
+								});
+							}else{
+								alert("你还有处方没处理");
+							}
+						}
+						
+					}
+				}
+			}
+		});
+	</script>
+</body>
+</html>

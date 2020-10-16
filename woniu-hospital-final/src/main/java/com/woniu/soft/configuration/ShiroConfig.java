@@ -83,6 +83,18 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/user/login", "anon");
 		filterChainDefinitionMap.put("/workers/login", "anon");
 		filterChainDefinitionMap.put("/page/login.html", "anon");
+
+		filterChainDefinitionMap.put("/page/userlogin.html", "anon");
+		filterChainDefinitionMap.put("/page/userindex.html", "anon");
+		filterChainDefinitionMap.put("/page/user/yuyue.html", "anon");
+		filterChainDefinitionMap.put("/page/user/preyuyue.html", "anon");
+		filterChainDefinitionMap.put("/page/user/checked.html", "anon");
+		filterChainDefinitionMap.put("/user/getdept", "anon");//
+		filterChainDefinitionMap.put("/user/getUser", "anon");
+		filterChainDefinitionMap.put("/nurse/getAllDocotor", "anon");
+		filterChainDefinitionMap.put("/nurse/getAllNurse", "anon");
+		filterChainDefinitionMap.put("/nurse/Admissionregistration", "anon");
+		filterChainDefinitionMap.put("/user/updateUserButton", "anon");
 		// 如果不满足上方所有的规则 则需要进行登录验证
 		filterChainDefinitionMap.put("/logout", "logout");
 		//在登陆之后或者通过记住我登陆之后都可以正常访问

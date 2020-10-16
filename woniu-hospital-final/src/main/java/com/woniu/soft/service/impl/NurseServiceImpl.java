@@ -3,6 +3,8 @@ package com.woniu.soft.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
+
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -203,4 +205,107 @@ public class NurseServiceImpl implements NurseService{
 	public void updateReturnDrug(ReturnApplication returnApplication) {
 		returnApplicationMapper.updateById(returnApplication);
 	}
+
+
+
+
+	//护士的入院登记功能
+	@Override
+	public List<User> getregistration(User user) throws Exception{
+		QueryWrapper<User> queryWorker = new QueryWrapper<>();
+		//通过前端传过来的用户名称查出这个对象的所有信息
+		if(user!=null&&user.getName()!=null&&user.getName()!="") {
+			queryWorker.like("name", user.getName());
+			queryWorker.eq("status", 1);
+			return userMapper.selectList(queryWorker);
+		}else {
+			queryWorker.eq("status", 1);
+			return userMapper.selectList(queryWorker);
+		}
+
+	}
+	//查询所有的医生
+	@Override
+	public List<Workers> getAllDocotor() throws Exception{
+		QueryWrapper<Workers> queryWorker = new QueryWrapper<>();
+		queryWorker.eq("r_id", 3);
+		queryWorker.or();
+		queryWorker.eq("r_id", 4);
+		return workersMapper.selectList(queryWorker);
+
+
+
+	}
+	//查询所有的护士
+	@Override
+	public List<Workers> getAllNurse() throws Exception{
+		// TODO Auto-generated method stub
+		QueryWrapper<Workers> queryWorker = new QueryWrapper<>();
+		queryWorker.eq("r_id", 5);
+		queryWorker.or();
+		queryWorker.eq("r_id", 6);
+		return workersMapper.selectList(queryWorker);
+	}
+	//获取所有空闲的床位
+	@Override
+	public List<Bed> getAllBed() throws Exception{
+		QueryWrapper<Bed> queryWorker = new QueryWrapper<>();
+		queryWorker.eq("status", 0);
+		return bedMapper.selectList(queryWorker);
+	}
+	//按键点击  提交入院登记功能
+	@Override
+	public void updataAdmissionRegistration(User user) throws Exception{
+		if(user!=null&&user.getId()!=null&&user.getDoctor()!=null&&user.getNurse()!=null) {
+			UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+			wrapper.eq("id", user.getId());
+			wrapper.set("status", 2);
+			userMapper.update(null, wrapper);
+			DailyList dailyList = new DailyList();
+			dailyList.setStatus(0);
+			dailyList.setUid(user.getId());
+			dailyList.setBedid(user.getBedId());
+			dailyListMapper.insert(dailyList);
+		}
+	}
+	//修改床位状态
+	@Override
+	public void updataBedStatus(int id) {
+		UpdateWrapper<Bed> wrapper = new UpdateWrapper<>();
+		wrapper.eq("id", id);
+		wrapper.set("status", 1);
+		bedMapper.update(null, wrapper);
+	}
+	@Override
+	public List<MedAdvice> getAdviceinfo(User user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void updataUserDocotors(User user) {
+		UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+		wrapper.eq("id", user.getId());
+		wrapper.set("doctor", user.getDoctor());
+		userMapper.update(null, wrapper);
+	}
+	@Override
+	public void updataUserNurse(User user) {
+		UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+		wrapper.eq("id", user.getId());
+		wrapper.set("nurse", user.getNurse());
+		userMapper.update(null, wrapper);
+	}
+	@Override
+	public void updataUserBed(User user) {
+		UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+		wrapper.eq("id", user.getId());
+		wrapper.set("bed_id", user.getBedId());
+		//将选择的床位状态改为1
+		UpdateWrapper<Bed> bedwrapper = new UpdateWrapper<>();
+		bedwrapper.eq("id", user.getBedId());
+		bedwrapper.set("status", 1);
+		bedMapper.update(null, bedwrapper);
+		userMapper.update(null, wrapper);
+	}
+
 }
