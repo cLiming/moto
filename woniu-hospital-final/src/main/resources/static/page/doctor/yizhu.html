@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html style="margin:0;padding:0">
+	<head>
+		<meta charset="UTF-8">
+	
+		<!-- 引入vue -->
+		<script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<!-- 引入样式 -->
+		
+		<link rel="stylesheet" href="../../lib/theme-chalk/index.css">
+		<link rel="stylesheet" href="../../css/new_file1.css">
+		<!-- 引入组件库 -->
+		<script src="../../lib/index.js"></script>
+		<!-- 引入axios -->
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	</head>
+	<body style="margin:-30px;padding:0">
+		
+		<div id="apps" >
+			<div class="tables">
+				<div class="main-ding">
+					 <el-col :span="18"><div ></div></el-col>
+					 	<el-col :span="1">
+						<!-- Form -->
+							<el-button icon="el-icon-edit"  @click="outerVisible = true" v-cloak>{{ss}}</el-button>
+								<el-dialog title="新增医嘱" :visible.sync="outerVisible">
+									<el-form :model="lists" :rules="rules" ref="lists" label-width="100px" class="demo-ruleForm">
+										<el-form-item label="患者姓名" prop="name">
+										<el-select v-model="lists.uId" placeholder="请选择患者" >
+											<el-option  v-for="item in tableData" :key="item.id" :label="item.name"
+													:value="item.id"></el-option>
+											</el-select>
+										</el-form-item>
+										<!--选择项目-->
+										<div style="margin-top: 20px">
+											<el-checkbox-group v-model="pIds" size="medium">
+												<el-checkbox-button v-for="city in projectLists" :label="city.id" :key="city.id">{{city.projectName}}</el-checkbox-button>
+											</el-checkbox-group>
+										</div>
+								<el-form-item>
+								<el-button icon="el-icon-edit" @click="innerVisible = true">新增处方</el-button>
+							    <el-button type="primary" @click="submitForm('lists')">立即创建</el-button>
+							    </el-form-item>
+							</el-form>
+						</el-dialog>
+						
+						
+						<el-dialog title="新增处方" :visible.sync="innerVisible">
+							<el-form :model="lists" ref="lists"  label-width="100px" class="demo-dynamic">
+							<el-form-item
+							    v-for="(domain, index) in lists.prescription.info"
+							    :label="'药品' + index"
+
+							    :prop="'domains' + index + '.drugId'"
+							    :rules="{
+							      required: true, message: '处方不能为空', trigger: 'blur'
+							    }"
+							  >
+								<el-form-item label="" >
+									<el-select placeholder="请选择药品"  v-model="domain.drugId">
+										<el-option  v-for="itemss in drugLists" :key="itemss.id" :label="itemss.name"
+													:value="itemss.id"></el-option>
+
+									</el-select>
+								</el-form-item>
+								<el-input onkeyup="value=value.replace(/[^\d]/g,'')" placeholder="请输入数量" v-model="domain.number"></el-input>
+									<el-button @click.prevent="removeDomain(domain)">删除</el-button>
+							  </el-form-item>
+							  <el-form-item>
+							    <el-button type="primary" @click="submitForms('lists')">提交</el-button>
+							    <el-button @click="addDomain">新增药品</el-button>
+							   </el-form-item>
+							</el-dialog>
+						</el-col>
+
+					<!--修改模态框-->
+					<el-dialog title="修改医嘱" :visible.sync="dialogVisible">
+						<el-form :model="xiu" :rules="rules" ref="xiu" label-width="100px" class="demo-ruleForm">
+							<div style="margin-top: 20px">
+								<el-checkbox-group v-model="arr" size="medium">
+									<el-checkbox-button v-for="city in projectLists" :label="city.id" :key="city.id">{{city.projectName}}</el-checkbox-button>
+								</el-checkbox-group>
+							</div>
+							<el-form-item
+									v-for="(domain, index) in xiu"
+									:label="'药品' + index"
+
+									:prop="'domains' + index + '.drugId'"
+									:rules="{
+							      required: true, message: '处方不能为空', trigger: 'blur'
+							    }"
+							>
+								<el-form-item label="" >
+									<el-select placeholder="请选择药品"  v-model="domain.drugId">
+										<el-option  v-for="itemss in drugLists" :key="itemss.id" :label="itemss.name"
+													:value="itemss.id"></el-option>
+
+									</el-select>
+								</el-form-item>
+								<el-input onkeyup="value=value.replace(/[^\d]/g,'')" placeholder="请输入数量" v-model="domain.number"></el-input>
+								<el-button @click.prevent="updataremoveDomain(domain)">删除</el-button>
+							</el-form-item>
+
+							<el-form-item>
+								<el-button type="primary" @click="updatasubmitForm('xiu')">修改</el-button>
+								<el-button @click="resetForm('xiu')">取消</el-button>
+							</el-form-item>
+						</el-form>
+					</el-dialog>
+
+					<el-table ref="singleTable" :data="tableDatas" highlight-current-row style="width: 100%">
+						<el-table-column width="20" >
+						</el-table-column>
+						<el-table-column type="index" width="80" label="编号">
+						</el-table-column>
+						<el-table-column property="name" label="姓名" :formatter="formatterName" width="100">
+						</el-table-column>
+						<el-table-column property="sex" label="性别" :formatter="formatter" width="100">
+						</el-table-column>
+						<el-table-column property="age" label="年龄" width="80" :formatter="formatterAge">
+						</el-table-column>
+						<el-table-column property="tel" label="电话" width="100" :formatter="formatterTel">
+						</el-table-column>
+						<el-table-column fixed="right" property="action" label="操作">
+							<template slot-scope="scope">
+								<el-button type="primary"  @click="handleEdit(scope.$index, scope.row)">修改医嘱</el-button>
+								<el-button type="danger" @click="handleDelete(scope.$index, scope.row)">删除医嘱</el-button>
+							</template>
+						</el-table-column>
+						</el-table>
+					<div class="pagediv">
+						<el-pagination
+							:page-size="20"
+							:pager-count="11"
+							layout="prev, pager, next"
+							:total="1000">
+						  >
+						</el-pagination>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+
+
+		new Vue({
+			el: '#apps',
+
+			data: function() {
+				return {
+
+					worker:{
+						id:'3'
+					},
+					arr:[],
+					visible: false,
+					input: '',
+					dialogVisible:false,
+					dialogTableVisible: false,
+					innerVisible: false,
+					formLabelWidth: '120px',
+					outerVisible :false,
+					outerVisibles :false,
+					pIds:[],
+					pageInfo:{
+						pageIndex:1,
+						pageNum:10
+					},
+					ss:'新增医嘱',
+					ruleForm: {
+						  name: '',
+						  projectId:[{
+							  id:'',
+							  medAdviceId:'',
+							  pId:'',
+							  status:0,
+						  }],
+						  region: '',
+						  date1: '',
+						  date2: '',
+						  delivery: false,
+						  type: [],
+						  resource: '',
+						  desc: '',
+						},
+
+					     
+					//用户数据
+					tableData: [{
+						id:'',
+						name: '',
+						sex: '',
+						age: '',
+						idCard:'',
+						tel: '',
+						nurse:'',
+						deptId:'',
+
+					}],
+					//新增的医嘱数据
+					dynamicValidateForm: {
+						domains: [{
+							id:'',
+							drugId: '',
+							number:'',
+							presId:'',
+						}],
+					},
+					lists:{
+						uId: '',
+						wId: '3',
+						info:[],
+						prescription:{
+							adId:'',
+							id:'',
+							status:'',
+							info:[{
+								id:'',
+								number:'',
+								presId:'',
+								drugId:''
+							}]
+						},
+					},
+					uplists:{
+						uId: '',
+						wId: '3',
+						info:[],
+						prescription:{
+							adId:'',
+							id:'',
+							status:'',
+							info:''
+						},
+					},
+					list:{
+						info:'',
+						prescription:{
+							id:'',
+							info:'',
+							adId:'',
+							status:0
+						},
+						uId:'',
+					},
+					xiu:'',
+					tableDatas:'',
+					//项目数据
+
+					projectLists:[{
+						id:'',
+						projectName:'',
+						price:''
+					}],
+					//药品信息数据
+					drugLists:[{
+						id:'',
+						name:'',
+						price:'',
+						number:''
+					}],
+					medAdvice:'',
+					rules: {
+						name: [
+							{ required: true, message: '请输入患者姓名', trigger: 'blur' },
+						],
+					},
+
+				}
+
+			},
+			created(){
+				axios.get("/doc/info?wid="+this.worker.id).then(data => {
+					if (data.data.code == "200") {
+						this.tableData=data.data.obj.userList;
+						this.projectLists=data.data.obj.projectList;
+						this.drugLists=data.data.obj.drugList;
+					}
+				});
+				<!--这里分页是写死的-->
+				axios.get("/doc/selectAd?wid="+this.worker.id+"&pageIndex="+this.pageInfo.pageIndex+"&pageNum="+this.pageInfo.pageNum).then(data => {
+					if (data.data.code == "200") {
+						this.tableDatas=data.data.obj.records;
+
+					}
+				});
+			},
+			methods: {
+				handleEdit(index, row) {
+					this.dialogVisible = true;
+					this.uplists=row
+					this.addarr(row);
+					this.addyaoping(row);
+				},
+				addyaoping(row){
+
+					this.xiu='';
+					this.xiu=row.prescription.info;
+					console.log(this.xiu);
+					console.log(row.prescription.info);
+					for (var yaos=0;yaos<row.prescription.info.length;yaos++){
+						 console.log(row.prescription.info[yaos].drugId);
+
+					}
+				},
+				//数组对象转数组
+				addarr(row){
+					//清空
+					this.arr=[]
+					for(var i=0;i<row.info.length;i++){
+						this.arr[i]=row.info[i].pId;
+					}
+					console.log(this.arr);
+				},
+				handleDelete(index, row) {
+
+					axios.get("/doc/deleteAd?wid="+row.wId+"&id="+row.uId).then(data => {
+						if (data.data.code == "200") {
+							alert("删除成功！")
+
+						}
+					});
+				},
+				submitForms(formNames) {
+				       this.innerVisible=false;
+						alert('处方新增成功！');
+					},
+				resetForm(formName) {
+					this.$refs[formName].resetFields();
+				},
+				removeDomain(item) {
+					var index = this.lists.prescription.info.indexOf(item)
+					if (index !== -1) {
+						this.lists.prescription.info.splice(index, 1)
+					}
+				},
+				addDomain() {
+					this.lists.prescription.info.push({
+						value: '',
+						key: Date.now()
+					});
+				},
+
+				updatasubmitForm(){
+					console.log(this.xiu);
+					console.log(this.arr);
+					this.zhuan();
+					console.log(this.uplists);
+					axios.put("/doc", this.uplists).then(data => {
+
+						if (data.data.code == "200") {
+
+							this.$message({
+								message: '医嘱修改成功',
+								type: 'success',
+
+							});
+						}
+					});
+
+				},
+				updataremoveDomain(item) {
+					var index = this.xiu.indexOf(item)
+					if (index !== -1) {
+						this.xiu.splice(index, 1)
+					}
+				},
+
+				qingkong(){
+					this.uplists.info=[];
+				},
+				//数组转数组对象
+				zhuan(){
+					this.qingkong();
+					this.uplists.prescription.info=this.xiu;
+					var numbers = this.arr.length
+					for(var i=0;i<numbers;i++){
+						this.uplists.info.push({
+							pId:this.arr[i]
+						});
+					}
+				},
+				submitForm(ruleForm) {
+					var numbers= this.pIds.length;
+
+					for(var i=0;i<numbers;i++){
+						this.lists.info.push({
+							pId:this.pIds[i]
+						});
+					}
+
+					console.log(this.lists);
+					this.medAdvice=this.lists;
+					this.pIds=[];
+					axios.post("/doc", this.medAdvice).then(data => {
+
+						if (data.data.code == "200") {
+
+							this.$message({
+								message: '医嘱新增成功',
+								type: 'success',
+
+								});
+							}
+						});
+					this.lists.info=[];
+					},
+				selects: function() {
+					alert(this.input);
+				},
+				formatters(tableDatas){
+					for (let i=0;i<this.projectLists.length;i++) {
+						if(tableDatas.deptId==this.projectLists[i].id){
+							return this.projectLists[i].projectName;
+						}
+					}
+				},
+				formatterName(tableDataName){
+					for (let i=0;i<this.tableDatas.length;i++) {
+							if(tableDataName.uId==this.tableData[i].id){
+								return this.tableData[i].name;
+						}
+					}
+				},
+				formatterTel(tableDataTel){
+					for (let i=0;i<this.tableDatas.length;i++) {
+						if(tableDataTel.uId==this.tableData[i].id){
+							return this.tableData[i].tel;
+						}
+					}
+				},
+				formatterAge(tableDataAge){
+					for (let i=0;i<this.tableDatas.length;i++) {
+						if(tableDataAge.uId==this.tableData[i].id){
+							return this.tableData[i].age;
+						}
+					}
+				},
+				//前端判断男女方法
+				formatter(tableData) {
+					return tableData.sex === 1 ? "男" : "女";
+				},
+
+			}
+		});
+	</script>
+</html>

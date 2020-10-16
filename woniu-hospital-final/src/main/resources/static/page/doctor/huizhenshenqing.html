@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html style="margin:0;padding:0">
+	<head>
+		<meta charset="UTF-8">
+
+		<!-- 引入vue -->
+		<script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<!-- 引入样式 -->
+
+		<link rel="stylesheet" href="../../lib/theme-chalk/index.css">
+		<link rel="stylesheet" href="../../css/new_file1.css">
+		<!-- 引入组件库 -->
+		<script src="../../lib/index.js"></script>
+		<!-- 引入axios -->
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	</head>
+	<body style="margin:-30px;padding:0">
+		<div id="apps">
+			<div class="tables">
+
+					<div class="main-ding">
+						<el-col :span="17"><div >
+							<el-col :span="13"></el-col>
+						</div></el-col>
+						<el-col :span="1">
+
+							<!-- Form -->
+							<el-button icon="el-icon-edit"  @click="dialogVisible = true">会诊申请</el-button>
+							<el-dialog title="申请会诊" :visible.sync="dialogVisible">
+								<el-form :model="shenqingdata" label-width="100px" class="demo-ruleForm">
+									<el-form-item label="" >
+										<el-select placeholder="病人"  v-model="shenqingdata.uId">
+											<el-option  v-for="itemss in ss" :key="itemss.id" :label="itemss.name"
+														:value="itemss.id"></el-option>
+
+										</el-select>
+									</el-form-item>
+									<el-form-item label="会诊目的">
+										<el-input v-model="shenqingdata.aim"></el-input>
+									</el-form-item>
+									<el-form-item label="病人现状">
+										<el-input v-model="shenqingdata.patientCondition"></el-input>
+									</el-form-item>
+									<el-form-item>
+										<el-button type="primary" @click="shenqing">申请</el-button>
+										<el-button @click="resetForm('xiu')">取消</el-button>
+									</el-form-item>
+								</el-form>
+							</el-dialog>
+
+							<el-dialog title="会诊确认" :visible.sync="dialogTableVisible">
+								<el-form :model="querendata"  label-width="100px" class="demo-ruleForm">
+									<el-form-item label="会诊详细情况">
+										<div style="margin: 20px 0;"></div>
+										<el-input
+												type="textarea"
+												:autosize="{ minRows: 4, maxRows: 8}"
+												placeholder="请输入内容"
+												v-model="querendata.diagnosisTreatment">
+										</el-input>
+									</el-form-item>
+									<el-form-item>
+										<el-button type="primary" @click="tijiao">提交</el-button>
+										<el-button @click="resetForm">取消</el-button>
+									</el-form-item>
+								</el-form>
+							</el-dialog>
+						</el-col>
+
+
+					<el-table ref="singleTable" :data="tableData" highlight-current-row style="width: 100%">
+						<el-table-column width="20" >
+						</el-table-column>
+						<el-table-column type="index" width="80" label="编号">
+						</el-table-column>
+						<el-table-column property="name" label="会诊号" :formatter="formatterName" width="120" >
+						</el-table-column>
+						<el-table-column property="aim" label="会诊目的" width="120" >
+						</el-table-column>
+						<el-table-column property="patientCondition" label="病状" width="140" >
+						</el-table-column>
+						<el-table-column fixed="right" property="action" label="操作">
+							<template slot-scope="scope">
+								<el-button icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">会诊记录确认</el-button>
+							</template>
+						</el-table-column>
+					</el-table>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		new Vue({
+			el: '#apps',
+			data: function() {
+				return {
+					dialogVisible:false,
+					dialogTableVisible: false,
+					tableData:'',
+					ss:'',
+					shenqingdata:{
+						uid:'',
+						patientCondition:'',
+						aim:'',
+					},
+					querendata:{
+						uid:'',
+						patientCondition:'',
+						aim:'',
+						diagnosisTreatment:''
+					}
+				}
+			},
+			created(){
+				this.replacs();
+			},
+			methods: {
+				replacs(){
+					axios.get("/doc/info?wid=3").then(data => {
+						this.ss=data.data.obj.userList;
+					});
+					axios.get("/doc/selectCon").then(data => {
+						this.tableData=data.data.list;
+					});
+				},
+				handleEdit(index, row){
+					this.querendata=row;
+					this.dialogTableVisible = true;
+				},
+				tijiao(){
+					axios.post("/doc/updateCon",this.querendata).then(data => {
+						if (data.data.code == "200") {
+							this.$message({
+								message: '会诊记录确认成功',
+								type: 'success',
+							});
+							this.replacs();
+							this.resetForm();
+						}
+					});
+				},
+				shenqing(){
+					axios.post("/doc/insertCon",this.shenqingdata).then(data => {
+						if (data.data.code == "200") {
+							this.$message({
+								message: '会诊记录确认成功',
+								type: 'success',
+							});
+							this.replacs();
+							this.resetForm();
+						}
+					});
+				},
+				resetForm(formName) {
+					this.shenqingdata=''
+					this.querendata=''
+					this.dialogVisible=false
+					this.dialogTableVisible=false
+				},
+				formatterName(tableDataName){
+					for (let i=0;i<this.ss.length;i++) {
+						if(tableDataName.uId==this.ss[i].id){
+							return this.ss[i].name;
+						}
+					}
+				},
+			},
+		});
+	</script>
+</html>
