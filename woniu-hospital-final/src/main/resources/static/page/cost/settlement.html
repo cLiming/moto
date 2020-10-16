@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>出院结算</title>
+
+    <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="/js/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+</head>
+<body>
+<div id="app">
+
+    <el-table :data="list" border style="width: 100%">
+        <el-table-column fixed prop="id" label="编号"> </el-table-column>
+        <el-table-column  prop="name" label="姓名"> </el-table-column>
+        <el-table-column  prop="sex" label="性别"> </el-table-column>
+        <el-table-column  prop="age" label="年龄"> </el-table-column>
+        <el-table-column prop="idCard" label="身份证号"> </el-table-column>
+        <el-table-column  prop="doctor" label="医生"> </el-table-column>
+        <el-table-column prop="tel" label="电话"> </el-table-column>
+        <el-table-column  prop="deptId" label="科室"> </el-table-column>
+        <el-table-column  prop="bedId" label="床位号"> </el-table-column>
+        <el-table-column  label="操作">
+            <template slot-scope="scope">
+                <el-button  v_if="shenghei" @click="checkUser(scope.row)" type="primary" plain size="small" >同意</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+
+</div>
+<script type="text/javascript">
+    new Vue({
+        el:"#app",
+        data:{
+            uid:"",
+            list:[],
+            user:{
+            },
+            shenghei:false,
+            jiesuan:false,
+            showAdviceVisible:false,
+            showProject:false,
+            adviceInfo:{
+                money:"",
+                adviceInfos:[],
+            },
+            prescription:{
+                drugs:[],
+                money:"",
+            },
+            dayList:{
+                days:"",
+                money:"",
+            },
+            adviceList:[],
+            adviceId:"",
+        },
+        created:function(){
+            this.selectData();
+            this.selectButton();
+        },
+        methods:{
+            selectData:function(){
+                var _this=this;
+                $.ajax({
+                    url:"/nurse/leave",
+                    success:function(data){
+                        if(data.code==200){
+                            _this.list=data.list;
+
+                        }
+                    }
+                });
+            },
+            selectButton:function(){
+                var href=location.href;
+                var pid=href.split("?")[1].split("=")[1];
+                //发送请求
+                var _this=this;
+                $.ajax({
+                    url:"/workers/button",
+                    data:{pid:pid},
+                    success:function(data){
+                        if(data.code="200"){
+                            for(var i=0;i<data.list.length;i++){
+                                if(data.list[i].name=="已审核出院申请"){
+                                    _this.shenghei=true;
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            checkUser:function(user){
+                var _this=this;
+                _this.user=user;
+                $.ajax({
+                    url:"/nurse/leave",
+                    type:"put",
+                    data:_this.user,
+                    success:function(data){
+                        if(data.code==200){
+                            _this.list=data.list;
+                            _this.selectData();
+                            _this.user="";
+                        }
+                    }
+                });
+            },
+
+        }
+    });
+</script>
+</body>
+</html>

@@ -23,7 +23,7 @@ public class Settlement implements Serializable {
     /**
      * 医嘱id
      */
-    private Integer advId;
+    private Integer uid;
 
     /**
      * 结算时间
@@ -41,12 +41,12 @@ public class Settlement implements Serializable {
         this.id = id;
     }
 
-    public Integer getAdvId() {
-        return advId;
+    public Integer getUid() {
+        return uid;
     }
 
-    public void setAdvId(Integer advId) {
-        this.advId = advId;
+    public void setUid(Integer uid) {
+        this.uid = uid;
     }
 
     public LocalDateTime getFlashTime() {
@@ -68,10 +68,10 @@ public class Settlement implements Serializable {
     @Override
     public String toString() {
         return "Settlement{" +
-        "id=" + id +
-        ", advId=" + advId +
-        ", flashTime=" + flashTime +
-        ", status=" + status +
-        "}";
+                "id=" + id +
+                ", uid=" + uid +
+                ", flashTime=" + flashTime +
+                ", status=" + status +
+                '}';
     }
 }
