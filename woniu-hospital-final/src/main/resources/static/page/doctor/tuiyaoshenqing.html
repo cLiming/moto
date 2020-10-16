@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html style="margin:0;padding:0">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- 引入vue -->
+    <script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
+    <!-- 引入样式 -->
+
+    <link rel="stylesheet" href="../../lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../css/new_file1.css">
+    <!-- 引入组件库 -->
+    <script src="../../lib/index.js"></script>
+    <!-- 引入axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body style="margin:-30px;padding:0">
+<div id="apps">
+    <div class="tables">
+
+        <div class="main-ding">
+            <el-col :span="18"><div ></div></el-col>
+            <el-col :span="1">
+
+                <!-- Form -->
+                <el-button icon="el-icon-edit" @click="outerVisible = true">新增退药申请</el-button>
+                <el-dialog title="新增退药申请" :visible.sync="outerVisible">
+                    <el-form label-width="100px" class="demo-ruleForm">
+                        <el-form-item label="" >
+                            <el-select placeholder="请选择病人"  v-model="ss.id" @change="selectTrigger(ss.id)">
+                                <el-option  v-for="items in ss" :key="items.id" :label="items.name"
+                                            :value="items.id">
+
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item
+                                v-for="(domain, index) in druplists"
+                                :label="'药名' + index"
+                                :key="domain.key"
+                                :prop="'domains.' + index + '.value'"
+
+                        >
+                            <el-col :span="11">
+                            <el-input v-model="domain.drugName" ></el-input>
+                            </el-col>
+                            <el-col :span="4">
+                            <el-input-number v-model="domain.numbers" controls-position="right" @change="handleChange" :min="0" ></el-input-number>
+                            </el-col>
+                        </el-form-item>
+                         <el-form-item>
+
+                            <el-button type="primary" @click="submitForm('druplists')">申请</el-button>
+                            <el-button @click="resetForm('druplists')">取消</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-dialog>
+            </el-col>
+
+            <el-table ref="singleTable" :data="tableData" highlight-current-row style="width: 100%">
+                <el-table-column width="20" >
+                </el-table-column>
+                <el-table-column type="index" width="80" label="编号">
+                </el-table-column>
+                <el-table-column property="name" label="姓名" width="100">
+                </el-table-column>
+                <el-table-column property="sex" label="性别" :formatter="formatter" width="100">
+                </el-table-column>
+                <el-table-column property="age" label="年龄" width="80">
+                </el-table-column>
+                <el-table-column property="tel" label="电话" width="100">
+                </el-table-column>
+
+
+                <el-table-column fixed="right" property="action" label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="primary" @click="handleEdit(scope.$index, scope.row)">撤销申请</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: '#apps',
+        data: function() {
+            return {
+
+                visible: false,
+                input: '',
+                dialogTableVisible: false,
+                innerVisible: false,
+                formLabelWidth: '120px',
+                outerVisible :false,
+                bing:'',
+                ss:'',
+
+
+                //模拟数据
+                tableData:'',
+                druplists:'',
+                //[{drugId:2,numbers:3,drugName:"蒙药心脑方"}
+                //,{drugId:3,numbers:5,drugName:"太极荷香正气液"}],
+            }
+        },
+        created(){
+            axios.get("/doc/allUserLeaving").then(data => {
+                if (data.data.code == "200") {
+                    this.tableData=data.data.list;
+
+                }
+            });
+            axios.get("/doc/info?wid=3").then(data => {
+                if (data.data.code == "200") {
+                    this.ss=data.data.obj.userList;
+                    console.log(data.data.list);
+                }
+            });
+        },
+        methods: {
+            handleChange(value) {
+               this.returnApplication.uId='';
+               this.returnApplication.uId=value;
+            },
+
+            selectTrigger(val) {
+                axios.get("/doc/selectDrugEntity?uid="+val).then(data => {
+                    if (data.data.code == "200") {
+                        this.druplists=data.data.list;
+                        console.log(this.druplists)
+                    }
+                });
+            },
+            // qingling(){
+            //     this.returnApplication='';
+            // },
+            submitForm(formNames) {
+               axios.post("/doc/leave?ui",this.druplists).then(data => {
+                    if (data.data.code == "200") {
+                        this.$message({
+                            message: '出院申请成功',
+                            type: 'success',
+
+                        });
+                    }
+                });
+                this.ss.id='';
+                this.outerVisible=false;
+            },
+            resetForm() {
+                this.ss.id='';
+                this.outerVisible=false;
+            },
+
+            handleEdit(index,row) {
+
+                axios.get("/doc/stay?uid="+row.id).then(data => {
+                    if (data.data.code == "200") {
+                        this.$message({
+                            message: '医嘱新增成功',
+                            type: 'success',
+                        });
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+
+            //前端判断男女方法
+            formatter(tableData) {
+                return tableData.sex === 1 ? "男" : "女";
+            }
+        }
+    })
+</script>
+</html>
