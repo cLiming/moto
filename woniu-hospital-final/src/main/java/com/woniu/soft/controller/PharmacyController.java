@@ -156,7 +156,13 @@ public class PharmacyController {
 		Page page = drugService.selectDrugs(id, name, pageIndex, pageNum);
 		return new JSONResult("200","success",null,page);
 	}
-	
+
+	//分页条件查询药品记录表
+	@RequestMapping("/selectDrugHis")
+	public JSONResult selectDrugHistory(Integer drugId,Integer status,String minDate,String maxDate,Integer pageIndex,Integer pageNum) {
+
+		return new JSONResult("200","success",null,null);
+	}
 	
 	
 }

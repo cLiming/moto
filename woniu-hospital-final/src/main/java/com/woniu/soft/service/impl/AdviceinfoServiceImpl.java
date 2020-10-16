@@ -36,4 +36,5 @@ public class AdviceinfoServiceImpl extends ServiceImpl<AdviceinfoMapper, Advicei
 		AdviceinfoWrapper.eq("med_advice_id", mid);
 		this.remove(AdviceinfoWrapper);
 	}
+
 }

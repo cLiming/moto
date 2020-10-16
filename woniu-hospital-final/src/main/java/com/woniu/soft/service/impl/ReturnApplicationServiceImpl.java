@@ -35,11 +35,5 @@ public class ReturnApplicationServiceImpl extends ServiceImpl<ReturnApplicationM
 		this.updateById(returnApplication);
 	}
 
-	@Override
-	public void removeById(Integer id) throws Exception {
-		ReturnApplication returnApplication = this.getById(id);
-		returnApplication.setStatus(404);
-		this.updateById(returnApplication);
-	}
-	
+
 }

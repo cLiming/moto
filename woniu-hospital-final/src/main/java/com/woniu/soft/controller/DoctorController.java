@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.woniu.soft.entity.*;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,18 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.woniu.soft.entity.Adviceinfo;
-import com.woniu.soft.entity.BigInfo;
-import com.woniu.soft.entity.CaseHistory;
-import com.woniu.soft.entity.Consultation;
-import com.woniu.soft.entity.Drug;
-import com.woniu.soft.entity.DrugEntity;
-import com.woniu.soft.entity.MedAdvice;
-import com.woniu.soft.entity.PresDrug;
-import com.woniu.soft.entity.Prescription;
-import com.woniu.soft.entity.Project;
-import com.woniu.soft.entity.ReturnApplication;
-import com.woniu.soft.entity.User;
 import com.woniu.soft.service.AdviceinfoService;
 import com.woniu.soft.service.CaseHistoryService;
 import com.woniu.soft.service.ConsultationService;
@@ -62,11 +53,14 @@ public class DoctorController {
 	@Resource
 	private ConsultationService consultationService;
 	@Resource
-	private ReturnApplicationService reService;
+	private ReturnApplicationService raService;
 
 	// 通过医生id查询所有医嘱
 	@RequestMapping("/selectAd")
-	public JSONResult selectAdvice(Integer wid, Integer pageIndex, Integer pageNum) throws Exception {
+	public JSONResult selectAdvice( Integer pageIndex, Integer pageNum) throws Exception {
+		Subject subject = SecurityUtils.getSubject();
+		Workers workers = (Workers) subject.getPrincipal();
+		Integer wid=workers.getId();
 		Page<MedAdvice> page = maService.selectByWidLimit(wid, pageIndex, pageNum);
 		List<MedAdvice> list = page.getRecords();
 		if (list != null) {
@@ -86,7 +80,10 @@ public class DoctorController {
 
 	// 通过医生ID查询所有在院负责病人信息
 	@RequestMapping("/info")
-	public JSONResult selectInfo(Integer wid) throws Exception {
+	public JSONResult selectInfo() throws Exception {
+		Subject subject = SecurityUtils.getSubject();
+		Workers workers = (Workers) subject.getPrincipal();
+		Integer wid=workers.getId();
 		// 查询所负责病人信息
 		List<User> userList = userService.selectListByWid(wid);
 		// 查询所有项目信息
@@ -99,12 +96,15 @@ public class DoctorController {
 
 	// 删除医嘱
 	@RequestMapping("/deleteAd")
-	public JSONResult removeMedAdvice(Integer id, Integer wid) throws Exception {
+	public JSONResult removeMedAdvice(Integer id) throws Exception {
+		Subject subject = SecurityUtils.getSubject();
+		Workers workers = (Workers) subject.getPrincipal();
+		Integer wid=workers.getId();
 		MedAdvice medAdvice = maService.getById(id);
 		if (medAdvice == null) {
 			return new JSONResult("800", "医嘱不存在", null, null);
 		} else {
-			if (medAdvice.getwId() == wid) {
+			if (wid.equals(medAdvice.getwId())) {
 				// 删除医嘱信息
 				maService.removeById(id);
 				// 删除医嘱详细信息
@@ -171,6 +171,17 @@ public class DoctorController {
 		Prescription prescription = medAdvice.getPrescription();
 		if (prescription != null) {
 			List<PresDrug> drugInfo = prescription.getPresDrugs();
+			if(drugInfo!=null) {
+				for (PresDrug presDrug : drugInfo) {
+					presDrugService.removeByPid(prescription.getId());
+					if (presDrug.getDrugId() != null && !presDrug.getDrugId().equals("")) {
+						presDrug.setPresId(medAdvice.getPrescription().getId());
+						presDrugService.save(presDrug);
+						Drug drug = drugService.getById(presDrug.getDrugId());
+						dPrice += drug.getPrice() * presDrug.getNumber();
+					}
+				}
+			}
 			if (drugInfo != null) {
 				presDrugService.removeByPid(prescription.getId());
 				presDrugService.saveBatch(drugInfo);
@@ -179,8 +190,16 @@ public class DoctorController {
 		List<Adviceinfo> info = medAdvice.getAdviceinfo();
 		if (info != null) {
 			aiService.removeByMid(medAdvice.getId());
+			for (Adviceinfo adviceinfo : info) {
+				adviceinfo.setMedAdviceId(medAdvice.getId());
+				Project project = proService.getById(adviceinfo.getpId());
+				pPrice += project.getPrice();
+			}
 			aiService.saveBatch(info);
 		}
+		medAdvice.setpTotal(pPrice);
+		medAdvice.setdTotal(dPrice);
+		maService.updateById(medAdvice);
 		return new JSONResult("200", "success", null, null);
 	}
 
@@ -213,7 +232,7 @@ public class DoctorController {
 		return new JSONResult("200", "success", userService.selectAllStayUserInfo(), null);
 	}
 
-	// 获取所有在院病人信息
+	// 获取所有正在申请出院病人信息
 	@RequestMapping("/allUserLeaving")
 	public JSONResult selectAllLeavingUserInfo() throws Exception {
 		return new JSONResult("200", "success", userService.selectAllLeavingUserInfo(), null);
@@ -262,7 +281,7 @@ public class DoctorController {
 	// 填写退药申请
 	@RequestMapping("/returnDrug")
 	public JSONResult saveReturnApplication(@RequestBody ReturnApplication returnApplication) throws Exception {
-		reService.save(returnApplication);
+		raService.save(returnApplication);
 		return new JSONResult("200", "success", null, null);
 	}
 
@@ -302,6 +321,24 @@ public class DoctorController {
 		}
 		return new JSONResult("200", "success", drugEntitys, null); 
 	}
-	
-	
+
+	//查询所有申请了退药申请的病人信息
+	@RequestMapping("/selectUserReDurg")
+	public JSONResult selectUserReDurg()throws  Exception{
+		List<User> users = new ArrayList<User>();
+		List<ReturnApplication> returnApplications = raService.list();
+		for (ReturnApplication returnApplication:returnApplications) {
+			User user = userService.getById(returnApplication.getuId());
+			user.setRaId(returnApplication.getId());
+			users.add(user);
+		}
+		return new JSONResult("200", "success",users, null);
+	}
+
+	//撤销退药申请
+	@RequestMapping("/removeDrugRe")
+	public  JSONResult removeDrugReturnById(Integer id)throws Exception{
+		raService.removeById(id);
+		return new JSONResult("200", "success",null, null);
+	}
 }

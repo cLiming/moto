@@ -1,6 +1,7 @@
 package com.woniu.soft.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
@@ -13,6 +14,9 @@ import java.io.Serializable;
  * @since 2020-10-15
  */
 public class User implements Serializable {
+    @TableField(exist = false)
+    private Integer raId;
+
 
     private static final long serialVersionUID = 1L;
 
@@ -43,6 +47,14 @@ public class User implements Serializable {
 
     private Double balance;
 
+
+    public Integer getRaId() {
+        return raId;
+    }
+
+    public void setRaId(Integer raId) {
+        this.raId = raId;
+    }
 
     public Integer getId() {
         return id;

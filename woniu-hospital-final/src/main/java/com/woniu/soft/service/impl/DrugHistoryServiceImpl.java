@@ -1,9 +1,11 @@
 package com.woniu.soft.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.woniu.soft.entity.DrugHistory;
 import com.woniu.soft.mapper.DrugHistoryMapper;
 import com.woniu.soft.service.DrugHistoryService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -57,5 +59,15 @@ public class DrugHistoryServiceImpl extends ServiceImpl<DrugHistoryMapper, DrugH
 		drugHistory.setStatus(1);
 		drugHistory.setwId(wid);
 		this.save(drugHistory);
+	}
+
+	@Override
+	public Page selectDrugHistoryByOption(Integer drugId, Integer status, String minDate, String maxDate, Integer pageIndex, Integer pageNum) throws Exception {
+		QueryWrapper<DrugHistory> wrapper = new QueryWrapper<DrugHistory>();
+		Page<DrugHistory> page = new Page<DrugHistory>(pageIndex,pageNum);
+		if((drugId==null||drugId==0)&&(status==null||status==0)&&(minDate==null||minDate.equals("")&&(maxDate==null||maxDate.equals("")))){
+
+		}
+		return null;
 	}
 }

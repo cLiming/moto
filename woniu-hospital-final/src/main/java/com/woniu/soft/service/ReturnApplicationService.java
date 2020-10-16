@@ -16,5 +16,4 @@ import com.woniu.soft.entity.ReturnApplication;
 public interface ReturnApplicationService extends IService<ReturnApplication> {
 	List<ReturnApplication> selectListByStatusEq1()throws Exception;
 	void updateStatusEq3(Integer id)throws Exception;
-	void removeById(Integer id)throws Exception;
 }

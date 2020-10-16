@@ -46,7 +46,7 @@
                             <el-input v-model="domain.drugName" ></el-input>
                             </el-col>
                             <el-col :span="4">
-                            <el-input-number v-model="domain.numbers" controls-position="right" @change="handleChange" :min="0" ></el-input-number>
+                            <el-input-number v-model="domain.number" controls-position="right" @change="handleChange" :min="0" ></el-input-number>
                             </el-col>
                         </el-form-item>
                          <el-form-item>
@@ -107,13 +107,13 @@
             }
         },
         created(){
-            axios.get("/doc/allUserLeaving").then(data => {
+            axios.get("/doc/selectUserReDurg").then(data => {
                 if (data.data.code == "200") {
                     this.tableData=data.data.list;
 
                 }
             });
-            axios.get("/doc/info?wid=3").then(data => {
+            axios.get("/doc/info").then(data => {
                 if (data.data.code == "200") {
                     this.ss=data.data.obj.userList;
                     console.log(data.data.list);
@@ -157,10 +157,10 @@
 
             handleEdit(index,row) {
 
-                axios.get("/doc/stay?uid="+row.id).then(data => {
+                axios.get("/doc/removeDrugRe?id="+row.raId).then(data => {
                     if (data.data.code == "200") {
                         this.$message({
-                            message: '医嘱新增成功',
+                            message: '撤销成功',
                             type: 'success',
                         });
                     } else {

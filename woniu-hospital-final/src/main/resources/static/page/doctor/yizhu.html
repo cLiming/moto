@@ -48,7 +48,7 @@
 						<el-dialog title="新增处方" :visible.sync="innerVisible">
 							<el-form :model="lists" ref="lists"  label-width="100px" class="demo-dynamic">
 							<el-form-item
-							    v-for="(domain, index) in lists.prescription.info"
+							    v-for="(domain, index) in lists.prescription.presDrugs"
 							    :label="'药品' + index"
 
 							    :prop="'domains' + index + '.drugId'"
@@ -150,9 +150,7 @@
 			data: function() {
 				return {
 
-					worker:{
-						id:'3'
-					},
+
 					arr:[],
 					visible: false,
 					input: '',
@@ -210,12 +208,12 @@
 					lists:{
 						uId: '',
 						wId: '3',
-						info:[],
+						adviceinfo:[],
 						prescription:{
 							adId:'',
 							id:'',
 							status:'',
-							info:[{
+							presDrugs:[{
 								id:'',
 								number:'',
 								presId:'',
@@ -226,19 +224,19 @@
 					uplists:{
 						uId: '',
 						wId: '3',
-						info:[],
+						adviceinfo:[],
 						prescription:{
 							adId:'',
 							id:'',
 							status:'',
-							info:''
+							presDrugs:''
 						},
 					},
 					list:{
-						info:'',
+						adviceinfo:'',
 						prescription:{
 							id:'',
-							info:'',
+							presDrugs:'',
 							adId:'',
 							status:0
 						},
@@ -271,7 +269,7 @@
 
 			},
 			created(){
-				axios.get("/doc/info?wid="+this.worker.id).then(data => {
+				axios.get("/doc/info").then(data => {
 					if (data.data.code == "200") {
 						this.tableData=data.data.obj.userList;
 						this.projectLists=data.data.obj.projectList;
@@ -279,7 +277,7 @@
 					}
 				});
 				<!--这里分页是写死的-->
-				axios.get("/doc/selectAd?wid="+this.worker.id+"&pageIndex="+this.pageInfo.pageIndex+"&pageNum="+this.pageInfo.pageNum).then(data => {
+				axios.get("/doc/selectAd?pageIndex="+this.pageInfo.pageIndex+"&pageNum="+this.pageInfo.pageNum).then(data => {
 					if (data.data.code == "200") {
 						this.tableDatas=data.data.obj.records;
 
@@ -296,11 +294,11 @@
 				addyaoping(row){
 
 					this.xiu='';
-					this.xiu=row.prescription.info;
+					this.xiu=row.prescription.presDrugs;
 					console.log(this.xiu);
-					console.log(row.prescription.info);
-					for (var yaos=0;yaos<row.prescription.info.length;yaos++){
-						 console.log(row.prescription.info[yaos].drugId);
+					console.log(row.prescription.presDrugs);
+					for (var yaos=0;yaos<row.prescription.presDrugs.length;yaos++){
+						 console.log(row.prescription.presDrugs[yaos].drugId);
 
 					}
 				},
@@ -308,14 +306,14 @@
 				addarr(row){
 					//清空
 					this.arr=[]
-					for(var i=0;i<row.info.length;i++){
-						this.arr[i]=row.info[i].pId;
+					for(var i=0;i<row.adviceinfo.length;i++){
+						this.arr[i]=row.adviceinfo[i].pId;
 					}
 					console.log(this.arr);
 				},
 				handleDelete(index, row) {
 
-					axios.get("/doc/deleteAd?wid="+row.wId+"&id="+row.uId).then(data => {
+					axios.get("/doc/deleteAd?id="+row.id).then(data => {
 						if (data.data.code == "200") {
 							alert("删除成功！")
 
@@ -330,13 +328,13 @@
 					this.$refs[formName].resetFields();
 				},
 				removeDomain(item) {
-					var index = this.lists.prescription.info.indexOf(item)
+					var index = this.lists.prescription.presDrugs.indexOf(item)
 					if (index !== -1) {
-						this.lists.prescription.info.splice(index, 1)
+						this.lists.prescription.presDrugs.splice(index, 1)
 					}
 				},
 				addDomain() {
-					this.lists.prescription.info.push({
+					this.lists.prescription.presDrugs.push({
 						value: '',
 						key: Date.now()
 					});
@@ -368,15 +366,15 @@
 				},
 
 				qingkong(){
-					this.uplists.info=[];
+					this.uplists.adviceinfo=[];
 				},
 				//数组转数组对象
 				zhuan(){
 					this.qingkong();
-					this.uplists.prescription.info=this.xiu;
+					this.uplists.prescription.presDrugs=this.xiu;
 					var numbers = this.arr.length
 					for(var i=0;i<numbers;i++){
-						this.uplists.info.push({
+						this.uplists.adviceinfo.push({
 							pId:this.arr[i]
 						});
 					}
@@ -385,7 +383,7 @@
 					var numbers= this.pIds.length;
 
 					for(var i=0;i<numbers;i++){
-						this.lists.info.push({
+						this.lists.adviceinfo.push({
 							pId:this.pIds[i]
 						});
 					}
@@ -404,7 +402,7 @@
 								});
 							}
 						});
-					this.lists.info=[];
+					this.lists.adviceinfo=[];
 					},
 				selects: function() {
 					alert(this.input);
