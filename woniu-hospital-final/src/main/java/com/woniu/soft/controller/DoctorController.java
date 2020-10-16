@@ -261,6 +261,11 @@ public class DoctorController {
 	// 申请会诊
 	@RequestMapping("/insertCon")
 	public JSONResult saveConsultation(@RequestBody Consultation consultation) throws Exception {
+		Subject subject = SecurityUtils.getSubject();
+		Workers workers = (Workers) subject.getPrincipal();
+		Integer wid=workers.getId();
+		consultation.setwId(wid);
+		consultation.setStatus(0);
 		consultationService.save(consultation);
 		return new JSONResult("200", "success", null, null);
 	}
