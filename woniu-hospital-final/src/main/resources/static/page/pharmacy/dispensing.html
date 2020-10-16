@@ -2,7 +2,7 @@
 <html style="margin:0;padding:0">
 	<head>
 		<meta charset="UTF-8">
-		<script src="../../js/jquery-3.5.1.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/js/jquery-3.4.1.min.js" type="text/javascript" charset="utf-8"></script>
 		<!-- 引入vue -->
 		<script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
 		<!-- 引入样式 -->
@@ -103,10 +103,10 @@
 							},
 							showInfo:function(data){
 								this.dialogFormVisible = true;
-								this.preInfo=data.info;
+								this.preInfo=data.presDrugs;
 								this.prescription.adId=data.adId;
 								this.prescription.id=data.id;
-								this.prescription.info = data.info;
+								this.prescription.info = data.presDrugs;
 								this.prescription.status = data.status;
 								this.prescription.user = data.user;
 								console.log(this.prescription);

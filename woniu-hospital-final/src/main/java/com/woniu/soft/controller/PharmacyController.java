@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.woniu.soft.entity.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,12 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.woniu.soft.entity.Drug;
-import com.woniu.soft.entity.MedAdvice;
-import com.woniu.soft.entity.PresDrug;
-import com.woniu.soft.entity.Prescription;
-import com.woniu.soft.entity.ReturnApplication;
-import com.woniu.soft.entity.User;
 import com.woniu.soft.service.DrugHistoryService;
 import com.woniu.soft.service.DrugService;
 import com.woniu.soft.service.MedAdviceService;
@@ -74,19 +69,26 @@ public class PharmacyController {
 	//完成配药
 	@RequestMapping("/deliverDrug")
 	public JSONResult deliverDrug(@RequestBody Prescription prescription) throws Exception{
-		Integer wid=3;
+		Subject subject = SecurityUtils.getSubject();
+		Workers workers = (Workers) subject.getPrincipal();
+		Integer wid=workers.getId();
 		prescriptionService.updateStatusEq1(prescription);
 		List<PresDrug> info = prescription.getPresDrugs();
-		for (PresDrug presDrug : info) {
-			Integer number = presDrug.getNumber();
-			Integer baseNumber = presDrug.getBaseNumber();
-			if(baseNumber>number) {
-				drugService.updateDrugDown(presDrug.getDrugId(), number);
-				dhService.saveDrugDeliver(presDrug.getDrugId(), number,prescription.getUser().getId(),wid);
-			}else {
-				return new JSONResult("998","编号为:"+presDrug.getDrugId()+"的药品 "+presDrug.getDrugName()+"库存不足!请尽快补充库存",null,null);
+		System.out.println("??????????????"+info);
+		if(info!=null){
+			for (PresDrug presDrug : info) {
+				Integer number = presDrug.getNumber();
+				Integer baseNumber = presDrug.getBaseNumber();
+				if(baseNumber>number) {
+					System.out.println("增？？？");
+					drugService.updateDrugDown(presDrug.getDrugId(), number);
+					dhService.saveDrugDeliver(presDrug.getDrugId(), number,prescription.getUser().getId(),wid);
+				}else {
+					return new JSONResult("998","编号为:"+presDrug.getDrugId()+"的药品 "+presDrug.getDrugName()+"库存不足!请尽快补充库存",null,null);
+				}
 			}
 		}
+
 		return new JSONResult("200","success",null,null);
 	}
 	
@@ -159,9 +161,16 @@ public class PharmacyController {
 
 	//分页条件查询药品记录表
 	@RequestMapping("/selectDrugHis")
-	public JSONResult selectDrugHistory(Integer drugId,Integer status,String minDate,String maxDate,Integer pageIndex,Integer pageNum) {
+	public JSONResult selectDrugHistory(Integer drugId,Integer status,String minDate,String maxDate,Integer pageIndex,Integer pageNum) throws Exception {
+		Page page = dhService.selectDrugHistoryByOption(drugId, status, minDate, maxDate, pageIndex, pageNum);
+		return new JSONResult("200","success",null,page);
+	}
 
-		return new JSONResult("200","success",null,null);
+	//分页条件查询药品记录表
+	@RequestMapping("/selectDrugHisAll")
+	public JSONResult selectDrugHistoryAll(Integer pageIndex,Integer pageNum) throws Exception {
+		Page page = dhService.selectDrugHistoryAll(pageIndex, pageNum);
+		return new JSONResult("200","success",null,page);
 	}
 	
 	
