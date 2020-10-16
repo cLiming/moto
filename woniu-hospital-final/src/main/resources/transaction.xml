@@ -29,10 +29,10 @@
        <tx:attributes>
        	   <!--配置方法名的规则  前缀是insert  delete update的所有方法  需要事务控制-->
        	   <!--在切入点中所有以save开头的方法需要进行事务管理-->
-           <tx:method name="seve*" propagation="REQUIRED"/>
+           <tx:method name="save*" propagation="REQUIRED"/>
            <!--在切入点中所有以remove开头的方法需要进行事务管理-->
            <tx:method name="remove*" propagation="REQUIRED"/>
-           <!--在切入点中所有以uodate开头的方法需要进行事务管理-->
+           <!--在切入点中所有以update开头的方法需要进行事务管理-->
            <tx:method name="update*" propagation="REQUIRED"/>
            <!--其他方法不需要事务控制   read-only为只读 -->
            <tx:method name="*" read-only="true"/>
