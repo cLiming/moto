@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html style="margin:0;padding:0">
+	<head>
+		<meta charset="UTF-8">
+		<script src="../../js/jquery-3.5.1.js" type="text/javascript" charset="utf-8"></script>
+		<!-- 引入vue -->
+		<script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="../../lib/theme-chalk/index.css">
+		<link rel="stylesheet" href="../../css/new_file1.css">
+		<!-- 引入组件库 -->
+		<script src="../../lib/index.js"></script>
+		<!-- 引入axios -->
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	</head>
+	<body style="margin:-30px;padding:0">
+		<div id="apps">
+			<div class="tables">
+
+				<div class="main-ding">
+					<el-col :span="12">
+						<div></div>
+					</el-col>
+					<el-col :span="1">
+						<!-- Form -->
+						<div style="height: 30px;"></div>
+						<el-dialog title="处方药品详情" :visible.sync="dialogFormVisible">
+							<el-table :data="preInfo" style="width: 100%">
+								<el-table-column prop="drugId" label="药品id" width="100">
+								</el-table-column>
+								<el-table-column prop="drugName" label="药品名称" width="180">
+								</el-table-column>
+								<el-table-column prop="baseNumber" label="药品库存数量">
+								</el-table-column>
+								<el-table-column prop="number" label="需求数量">
+								</el-table-column>
+							</el-table>
+							<div slot="footer" class="dialog-footer">
+								<el-button type="warning" @click="deliverDrug()" >配药完毕</el-button> 
+								<el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+							</div>
+						</el-dialog>
+					</el-col>
+					<el-table ref="singleTable" :data="tableData" highlight-current-row style="width: 100%">
+						<el-table-column width="20">
+						</el-table-column>
+						<el-table-column property="id" width="300" label="编号">
+						</el-table-column>
+						<el-table-column property="user.name" width="100" label="姓名" width="100">
+						</el-table-column>
+						<el-table-column fixed="right" property="action" label="操作">
+							<template slot-scope="scope">
+								<el-button type="primary" @click="showInfo(scope.row)" >处方药品详情</el-button>
+							</template>
+						</el-table-column>
+					</el-table>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		new Vue({
+					el: '#apps',
+					created: function() {
+						this.selects();
+					},
+					data: function() {
+						return {
+							visible: false,
+							input: '',
+							dialogTableVisible: false,
+							dialogFormVisible: false,
+							formLabelWidth: '120px',
+							form: {
+								name: '',
+								region: '',
+								date1: '',
+								date2: '',
+								delivery: false,
+								type: [],
+								resource: '',
+								desc: ''
+							},
+							tableData: [
+								],
+								preInfo:[
+								],
+								prescription:{
+								}
+								
+								
+							}
+						},
+						methods: {
+							selects: function() {
+								var _this = this;
+								$.ajax({
+									url: "/phar/all",
+									success: function(data) {
+										_this.tableData=data.list;
+									}
+								})
+							},
+							showInfo:function(data){
+								this.dialogFormVisible = true;
+								this.preInfo=data.info;
+								this.prescription.adId=data.adId;
+								this.prescription.id=data.id;
+								this.prescription.info = data.info;
+								this.prescription.status = data.status;
+								this.prescription.user = data.user;
+								console.log(this.prescription);
+							},
+							deliverDrug:function(){
+								axios.post('/phar/deliverDrug',this.prescription).then(data =>{
+									if(data.data.code=="200"){
+										alert("配药已录入");
+										this.dialogFormVisible = false;
+										this.selects();
+									}
+								})
+								
+							}
+							/* selectDrugs: function() {
+								var _this = this;
+								$.ajax({
+									url: "/phar/selectDrug",
+									success: function(data) {
+										console.log(data);
+									}
+								})
+							} */
+						}
+					})
+	</script>
+</html>

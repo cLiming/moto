@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html style="margin:0;padding:0">
+	<head>
+		<meta charset="UTF-8">
+		<script src="../../js/jquery-3.5.1.js" type="text/javascript" charset="utf-8"></script>
+		<!-- 引入vue -->
+		<script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="../../lib/theme-chalk/index.css">
+		<link rel="stylesheet" href="../../css/new_file1.css">
+		<!-- 引入组件库 -->
+		<script src="../../lib/index.js"></script>
+		<!-- 引入axios -->
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<style>
+			.numberText{
+				height: 40px;
+				width: 140px;
+			}
+		</style>
+	</head>
+	<body style="margin:-30px;padding:0">
+		<div id="apps">
+			<div class="tables">
+
+				<div class="main-ding">
+					<el-col :span="12">
+						<div></div>
+					</el-col>
+					 <el-col :span="1">
+						<div style="height: 30px;"></div>
+						<el-dialog title="处方药品详情" :visible.sync="dialogNewDrugVisible">
+								<div style="text-align:left;display: inline;">
+									<input type="number" oninput = "value=value.replace(/[^\d]/g,'')" min="0" name="points" class="numberText" placeholder="请输入入库数量"/>
+									<el-button type="primary" @click="inputDrug()">入库</el-button>
+								</div>
+								<div style="text-align:left;display: inline;margin-left: 20px;">
+									<input type="number" oninput = "value=value.replace(/[^\d]/g,'')" min="0" name="points" class="numberText" placeholder="请输入出库数量"/>
+									<el-button type="primary" @click="outputDrug()">出库</el-button>
+								</div>
+								<div style="text-align:left;display: inline;">
+									<input type="number" min="0" class="numberText" placeholder="请输入修改后的价格"/>
+									<el-button type="primary" @click="changePrice()">修改价格</el-button>
+								</div>
+							<div slot="footer" class="dialog-footer">
+								<el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+							</div>
+						</el-dialog>
+					</el-col>
+					
+					
+					
+					<el-col :span="1">
+						<div style="height: 30px;"></div>
+						<el-dialog title="处方药品详情" :visible.sync="dialogFormVisible">
+								<div style="text-align:left;display: inline;">
+									<input type="number" oninput = "value=value.replace(/[^\d]/g,'')" min="0" name="points" class="numberText" placeholder="请输入入库数量"/>
+									<el-button type="primary" @click="inputDrug()">入库</el-button>
+								</div>
+								<div style="text-align:left;display: inline;margin-left: 20px;">
+									<input type="number" oninput = "value=value.replace(/[^\d]/g,'')" min="0" name="points" class="numberText" placeholder="请输入出库数量"/>
+									<el-button type="primary" @click="outputDrug()">出库</el-button>
+								</div>
+							<div slot="footer" class="dialog-footer">
+								<el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+							</div>
+						</el-dialog>
+					</el-col> 
+					<el-table ref="singleTable" :data="tableData" highlight-current-row style="width: 100%">
+						<el-table-column width="20" >
+						</el-table-column>
+						<el-table-column property="id" width="150" label="药品编号">
+						</el-table-column>
+						<el-table-column property="name" width="250" label="药品名称" width="100">
+						</el-table-column>
+						<el-table-column property="price" width="150" label="药品价格" width="100">
+						</el-table-column>
+						<el-table-column property="number" width="150" label="药品库存" width="100">
+						</el-table-column>
+						<el-table-column property="action" label="操作">
+							<template slot-scope="scope">
+								<el-button type="primary" @click="showInfo(scope.row)">库存管理</el-button>
+							</template>
+						</el-table-column>
+					</el-table>
+					 <div class="block">
+						<span class="demonstration">完整功能</span>
+						<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
+						 :page-sizes="[5, 10, 15, 20]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+						</el-pagination>
+					</div> 
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		new Vue({
+			el: '#apps',
+			created: function() {
+				this.selects();
+			},
+			data: function() {
+				return {
+					currentPage1: 5,
+					currentPage2: 5,
+					currentPage3: 5,
+					currentPage4: 4,
+					visible: false,
+					input: '',
+					dialogNewDrugVisible:false,
+					dialogTableVisible: false,
+					dialogFormVisible: false,
+					formLabelWidth: '120px',
+					form: {
+						name: '',
+						region: '',
+						date1: '',
+						date2: '',
+						delivery: false,
+						type: [],
+						resource: '',
+						desc: ''
+					},
+					selectInfo:{
+						id:"",
+						name:""
+					},
+					tableData:[],
+					preInfo: [
+					],
+					drug: {
+						"id": 1,
+						"name": "西瓜霜含片",
+						"price": 20,
+						"number": 991
+					}
+
+
+
+				}
+			},
+			methods: {
+				handleSizeChange(val) {
+					console.log(`每页 ${val} 条`);
+				},
+				handleCurrentChange(val) {
+					console.log(`当前页: ${val}`);
+				},
+				selects: function() {
+					var _this = this;
+					$.ajax({
+						url: "/phar/selectDrug",
+						success: function(data) {
+							_this.tableData=data.list;
+						}
+					})
+					/* axios.get("/phar/selectDrug").then(function(data) {
+						this.tableData=data.data.list;
+						console.log(this.tableData);
+					}) */
+				},
+				showInfo: function(data) {
+					this.dialogFormVisible = true;
+					this.drug=data;
+					console.log(this.drug);
+				},
+				inputDrug: function() {
+					axios.post('/phar/inputDrug', this.drug).then(data => {
+						if (data.data.code == "200") {
+							alert("配药已录入");
+							this.dialogFormVisible = false;
+						}
+					})
+				},
+				outputDrug: function() {
+					axios.post('/phar/outputDrug', this.drug).then(data => {
+						if (data.data.code == "200") {
+							alert("配药已录入");
+							this.dialogFormVisible = false;
+						}
+					})
+				},
+				saveDrug: function() {
+					axios.post('/phar/saveDrug', this.drug).then(data => {
+						if (data.data.code == "200") {
+							alert("配药已录入");
+							this.dialogFormVisible = false;
+						}
+					})
+				}
+				/* selectDrugs: function() {
+					var _this = this;
+					$.ajax({
+						url: "/phar/selectDrug",
+						success: function(data) {
+							console.log(data);
+						}
+					})
+				} */
+			}
+		})
+	</script>
+</html>
