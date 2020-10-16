@@ -72,7 +72,7 @@ public class NurseController {
 	//修改用户状态,将提交出院申请的用户更改为已审核
 	@PutMapping("leave")
 	public JSONResult updateUser(User user) throws Exception {
-		user.setStatus(5);
+		user.setStatus(6);
 		nurseService.updateUserInfo(user);
 		return new JSONResult("200","success",null,null);
 	}
@@ -104,7 +104,7 @@ public class NurseController {
 	//条件查询病人，
 	@RequestMapping("allUser")
 	public JSONResult selectAllUser(User user) throws Exception {
-		user.setStatus(3);
+		//user.setStatus(3);
 		return new JSONResult("200","success",nurseService.selectAllUser(user),null);
 	}
 	//查询该病人的项目费用和药品费用之和,业务层new了一个对象，下标0位置存储该值
