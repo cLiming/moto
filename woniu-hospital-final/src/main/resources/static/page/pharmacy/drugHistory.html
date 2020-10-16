@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html style="margin:0;padding:0">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- 引入vue -->
+    <script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
+    <!-- 引入样式 -->
+
+    <link rel="stylesheet" href="../../lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../css/new_file1.css">
+    <!-- 引入组件库 -->
+    <script src="../../lib/index.js"></script>
+    <!-- 引入axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body style="margin:-30px;padding:0">
+<div id="apps">
+    <div class="tables">
+        <div class="main-ding">
+           <el-col :span="2"></el-col>
+           <el-col :span="20">
+
+               <el-select placeholder="状态" style="width: 100px" v-model="status" @change="handleChanges(status)">
+                   <el-option label="入库" value=0></el-option>
+                   <el-option label="出库" value=1></el-option>
+                   <el-option label="抓药出库" value=2></el-option>
+                   <el-option label="退药入库" value=3></el-option>
+               </el-select>
+               <el-select style="width: 100px" placeholder="药品"  v-model="druptableData.id" @change="selectTrigger(druptableData.id)">
+                   <el-option  v-for="items in druptableData" :key="items.id" :label="items.name"
+                               :value="items.id">
+
+                   </el-option>
+               </el-select>
+               <el-date-picker
+                       v-model="date"
+                       type="daterange"
+                       @change="handleChange(date)"
+                       range-separator="至"
+                       start-placeholder="开始日期"
+                       end-placeholder="结束日期">
+               </el-date-picker>
+               <el-button icon="el-icon-refresh" circle  @click="repse"></el-button>
+             </el-col>
+
+
+
+            <el-table ref="singleTable" :data="tableData"  highlight-current-row style="width: 100%">
+                <el-table-column width="40" >
+                </el-table-column>
+                <el-table-column type="index" width="80" label="编号">
+                </el-table-column>
+                <el-table-column property="name" label="药品名" width="120">
+                </el-table-column>
+                <el-table-column property="sex" label="数量" :formatter="formatter" width="100">
+                </el-table-column>
+                <el-table-column property="age" label="购买人" width="80">
+                </el-table-column>
+                <el-table-column property="tel" label="时间" width="160">
+                </el-table-column>
+                <el-table-column fixed="right" property="action" label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="primary" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: '#apps',
+        data: function() {
+            return {
+                visible: false,
+                dialogTableVisible: false,
+                innerVisible: false,
+                formLabelWidth: '120px',
+                outerVisible :false,
+                bing:'',
+                ss:'',
+                //模拟数据
+                tableData:'',
+                druptableData:'',
+                drugId:'',
+
+                status:'',
+                date:''
+            }
+        },
+        created(){
+            this.replac();
+        },
+        methods: {
+            repse(){
+                this.drugHistory='';
+                this.replac();
+            },
+            handleChanges(value){
+                axios.get("/phar/selectDrugHis?status="+value+"&pageIndex=1&pageNum=10").then(data => {
+                    if (data.data.code == "200") {
+                        alert("");
+                    }
+                });
+            },
+            handleChange(value) {
+                axios.get("/phar/selectDrugHis?minDate="+value[0]+"&maxDate="+value[1]+"&pageIndex=1&pageNum=10").then(data => {
+                    if (data.data.code == "200") {
+                        alert("时间修改");
+                    }
+                });
+            },
+            selectTrigger(value){
+                axios.get("/phar/selectDrugHis?drupId="+value+"&pageIndex=1&pageNum=10").then(data => {
+                    if (data.data.code == "200") {
+                        alert("药品id");
+                    }
+                });
+            },
+            //重置查页面的方法
+            replac(){
+                //查询所有药品
+                axios.get("/phar/selectDrug").then(data => {
+                    if (data.data.code == "200") {
+                        this.druptableData=data.data.list;
+                    }
+                });
+                axios.get("/doc/allUserStay").then(data => {
+                    if (data.data.code == "200") {
+                        this.ss=data.data.list;
+                        console.log(data.data.list);
+                    }
+                });
+
+            },
+            //出院提交方法
+            submitForms(formNames) {
+                axios.get("/doc/leave?uid="+this.ss.id).then(data => {
+                    if (data.data.code == "200") {
+                        this.$message({
+                            message: '出院申请成功',
+                            type: 'success',
+                        });
+                        this.replac();
+                    }
+                });
+                this.ss.id='';
+                this.outerVisible=false;
+            },
+            resetForm() {
+                this.ss.id='';
+                this.outerVisible=false;
+            },
+            //出院撤销申请
+            handleEdit(index,row) {
+                axios.get("/doc/stay?uid="+row.id).then(data => {
+                    if (data.data.code == "200") {
+                        this.$message({
+                            message: '申请撤销成功',
+                            type: 'success',
+
+                        });
+                        this.replac();
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+
+            //前端判断男女方法
+            formatter(tableData) {
+                return tableData.sex === 1 ? "男" : "女";
+            }
+        }
+    })
+</script>
+</html>
