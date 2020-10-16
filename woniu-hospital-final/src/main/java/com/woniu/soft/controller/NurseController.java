@@ -64,8 +64,9 @@ public class NurseController {
 		return new JSONResult("200","success",null,null);
 	}
 	//查询所有提交出院申请的病人,
-	@GetMapping("leave")
+	@GetMapping ("leave")
 	public JSONResult selectUserByStatus() throws Exception {
+
 		return new JSONResult("200","success",nurseService.selectUserByStatus(),null);
 	}
 	//修改用户状态,将提交出院申请的用户更改为已审核

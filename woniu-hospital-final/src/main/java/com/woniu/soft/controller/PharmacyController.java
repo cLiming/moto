@@ -61,7 +61,7 @@ public class PharmacyController {
 						presDrug.setDrugName(drug.getName());
 						presDrug.setBaseNumber(drug.getNumber());
 					}
-					prescription.setpresDrugs(presList);
+					prescription.setPresDrugs(presList);
 					User user = userService.getById(medAdvice.getuId());
 					prescription.setUser(user);
 					list.add(prescription);
@@ -76,7 +76,7 @@ public class PharmacyController {
 	public JSONResult deliverDrug(@RequestBody Prescription prescription) throws Exception{
 		Integer wid=3;
 		prescriptionService.updateStatusEq1(prescription);
-		List<PresDrug> info = prescription.getpresDrugs();
+		List<PresDrug> info = prescription.getPresDrugs();
 		for (PresDrug presDrug : info) {
 			Integer number = presDrug.getNumber();
 			Integer baseNumber = presDrug.getBaseNumber();

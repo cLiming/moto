@@ -77,7 +77,7 @@ public class DoctorController {
 				medAdvice.setPrescription(prescription);
 				if (prescription != null) {
 					List<PresDrug> DrugList = presDrugService.selectListByPid(prescription.getId());
-					prescription.setpresDrugs(DrugList);
+					prescription.setPresDrugs(DrugList);
 				}
 			}
 		}
@@ -135,7 +135,7 @@ public class DoctorController {
 		if (prescription != null) {
 			prescription.setAdId(medAdvice.getId());
 			prescriptionService.save(prescription);
-			List<PresDrug> drugInfo = prescription.getpresDrugs();
+			List<PresDrug> drugInfo = prescription.getPresDrugs();
 			if (drugInfo != null) {
 				for (PresDrug presDrug : drugInfo) {
 					if (presDrug.getDrugId() != null || !presDrug.getDrugId().equals("")) {
@@ -170,7 +170,7 @@ public class DoctorController {
 		maService.updateById(medAdvice);
 		Prescription prescription = medAdvice.getPrescription();
 		if (prescription != null) {
-			List<PresDrug> drugInfo = prescription.getpresDrugs();
+			List<PresDrug> drugInfo = prescription.getPresDrugs();
 			if (drugInfo != null) {
 				presDrugService.removeByPid(prescription.getId());
 				presDrugService.saveBatch(drugInfo);
@@ -281,7 +281,7 @@ public class DoctorController {
 						presDrug.setDrugName(drug.getName());
 						presDrug.setBaseNumber(drug.getNumber());
 					}
-					prescription.setpresDrugs(presList);
+					prescription.setPresDrugs(presList);
 					User user = userService.getById(medAdvice.getuId());
 					prescription.setUser(user);
 					list.add(prescription);

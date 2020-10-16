@@ -20,7 +20,28 @@ public class ReturnApplication implements Serializable {
 	
 	@TableField(exist = false)
 	private User user;
-	
+    @TableField(exist = false)
+    private Workers worker;
+
+    public Workers getWorker() {
+        return worker;
+    }
+
+    public void setWorker(Workers worker) {
+        this.worker = worker;
+    }
+
+    @TableField(exist = false)
+    private Drug drug;
+
+    public Drug getDrug() {
+        return drug;
+    }
+
+    public void setDrug(Drug drug) {
+        this.drug = drug;
+    }
+
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)

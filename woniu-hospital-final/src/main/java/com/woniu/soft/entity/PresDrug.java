@@ -34,9 +34,18 @@ public class PresDrug implements Serializable {
     
     @TableField(exist = false)
     private Integer baseNumber;
-    
-    
-	public String getDrugName() {
+    @TableField(exist = false)
+    private  Drug drug;
+
+    public Drug getDrug() {
+        return drug;
+    }
+
+    public void setDrug(Drug drug) {
+        this.drug = drug;
+    }
+
+    public String getDrugName() {
 		return drugName;
 	}
 

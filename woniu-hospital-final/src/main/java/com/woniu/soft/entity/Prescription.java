@@ -33,10 +33,20 @@ public class Prescription implements Serializable {
     
     @TableField(exist = false)
     private List<PresDrug> presDrugs;
-    
-    
+    @TableField(exist = false)
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public List<PresDrug> getPresDrugs() {
-		return presDrugs;
+
+        return presDrugs;
 	}
 
 	public void setPresDrugs(List<PresDrug> presDrugs) {

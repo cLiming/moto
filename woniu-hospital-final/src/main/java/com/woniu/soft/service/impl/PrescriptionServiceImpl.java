@@ -1,6 +1,8 @@
-zpackage com.woniu.soft.service.impl;
+package com.woniu.soft.service.impl;
 
-import com.woniu.soft.entity.MedAdvice;
+
+
+
 import com.woniu.soft.entity.Prescription;
 import com.woniu.soft.mapper.PrescriptionMapper;
 import com.woniu.soft.service.PrescriptionService;
@@ -8,7 +10,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 

@@ -85,9 +85,10 @@ public class NurseServiceImpl implements NurseService{
 	}
 	@Override
 	public List<User> selectUserByStatus() {
-		QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-		queryWrapper.eq("status",4);
-		return userMapper.selectList(queryWrapper);
+		QueryWrapper<User> wrapper = new QueryWrapper<>();
+		wrapper.eq("status",4);
+
+		return userMapper.selectList(wrapper);
 	}
 	@Override
 	public List<MedAdvice> selectAdvices(Integer id) {
@@ -126,7 +127,7 @@ public class NurseServiceImpl implements NurseService{
 				List<PresDrug> list = presDrugMapper.selectList(queryWrapper);
 				if(list.size()>0) {
 					for(int i=0;i<list.size();i++) {
-						Drug drug = drugMapper.selectById(list.get(i).getDrId());
+						Drug drug = drugMapper.selectById(list.get(i).getDrugId());
 						list.get(i).setDrug(drug);
 						//list.set(i,list.get(i));
 					}
