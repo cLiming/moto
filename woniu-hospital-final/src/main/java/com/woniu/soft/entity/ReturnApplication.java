@@ -15,7 +15,12 @@ import com.baomidou.mybatisplus.annotation.TableId;
  * @since 2020-10-15
  */
 public class ReturnApplication implements Serializable {
-
+	@TableField(exist = false)
+	private String drugName;
+	
+	@TableField(exist = false)
+	private User user;
+	
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
@@ -23,30 +28,18 @@ public class ReturnApplication implements Serializable {
 
     private Integer uId;
 
-    private Integer drId;
+    private String drId;
 
     private Integer number;
 
     private Integer wId;
 
     private Integer status;
-    
-    @TableField(exist = false)
-    private Drug drug;
-    @TableField(exist = false)
-    private User user;
-    @TableField(exist = false)
-    private Workers worker;
-    
-    public Drug getDrug() {
-		return drug;
-	}
 
-	public void setDrug(Drug drug) {
-		this.drug = drug;
-	}
-
-	public User getUser() {
+    
+    
+    
+    public User getUser() {
 		return user;
 	}
 
@@ -54,12 +47,12 @@ public class ReturnApplication implements Serializable {
 		this.user = user;
 	}
 
-	public Workers getWorker() {
-		return worker;
+	public String getDrugName() {
+		return drugName;
 	}
 
-	public void setWorker(Workers worker) {
-		this.worker = worker;
+	public void setDrugName(String drugName) {
+		this.drugName = drugName;
 	}
 
 	public Integer getId() {
@@ -77,16 +70,18 @@ public class ReturnApplication implements Serializable {
     public void setuId(Integer uId) {
         this.uId = uId;
     }
+    
+    
 
-    public Integer getDrId() {
-        return drId;
-    }
+    public String getDrId() {
+		return drId;
+	}
 
-    public void setDrId(Integer drId) {
-        this.drId = drId;
-    }
+	public void setDrId(String drId) {
+		this.drId = drId;
+	}
 
-    public Integer getNumber() {
+	public Integer getNumber() {
         return number;
     }
 
@@ -112,8 +107,8 @@ public class ReturnApplication implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ReturnApplication [id=" + id + ", uId=" + uId + ", drId=" + drId + ", number=" + number + ", wId=" + wId
-				+ ", status=" + status + ", drug=" + drug + ", user=" + user + ", worker=" + worker + "]";
+		return "ReturnApplication [drugName=" + drugName + ", user=" + user + ", id=" + id + ", uId=" + uId + ", drId="
+				+ drId + ", number=" + number + ", wId=" + wId + ", status=" + status + "]";
 	}
 	
 }
