@@ -18,4 +18,5 @@ public interface DrugHistoryService extends IService<DrugHistory> {
 	void saveDrugInput(Integer drugId,Integer number,Integer wid)throws Exception;
 	void saveDrugoutPut(Integer drugId,Integer number,Integer wid)throws Exception;
 	Page selectDrugHistoryByOption(Integer drugId,Integer status,String minDate,String maxDate,Integer pageIndex,Integer pageNum)throws Exception;
+	Page selectDrugHistoryAll(Integer pageIndex,Integer pageNum)throws Exception;
 }

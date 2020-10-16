@@ -64,8 +64,8 @@ public class DrugServiceImpl extends ServiceImpl<DrugMapper, Drug> implements Dr
 	@Override
 	public Page selectDrugs(Integer id, String name, Integer pageIndex, Integer PageNum) throws Exception {
 		QueryWrapper<Drug> wrapper = new QueryWrapper<Drug>();
-		Page<Drug> page = new Page<Drug>(pageIndex,PageNum);
 		if(id==0&&name.equals("")) {
+			Page<Drug> page = new Page<Drug>(pageIndex,PageNum);
 			return this.page(page);
 		}else {
 			if(id!=0) {
@@ -74,6 +74,7 @@ public class DrugServiceImpl extends ServiceImpl<DrugMapper, Drug> implements Dr
 			if(!name.equals("")) {
 				wrapper.likeRight(true,"name", name);
 			}
+			Page<Drug> page = new Page<Drug>(pageIndex,PageNum);
 			return this.page(page, wrapper);
 		}
 	}
