@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SettlementService extends IService<Settlement> {
 
+   public void updateManyInfo(Integer id);
 }

@@ -72,8 +72,6 @@
  					</template> 
  				</el-table-column > 
 			</el-table>
-			<el-button type="text" disabled>住院天数:</el-button>
-			<el-button type="text">{{bedList.days}}天</el-button>
 			<el-button type="text" disabled>病床价格:</el-button>
 			<el-button type="text">￥{{bedList.price}}</el-button>
 			<el-button type="text" disabled>住院费用:</el-button>
@@ -121,6 +119,7 @@
 			list:[],
 			user:{},
 			user:{
+				status:null,
 				name:"",
 				sex:"",
 				idCard:"",
@@ -140,7 +139,6 @@
 			pres:[],
 			drugMoney:0,
 			bedList:{
-				days:0,
 				money:0,
 				price:0,
 			},
@@ -152,14 +150,15 @@
 		},
 		methods:{
 			selectData:function(){
-				var _this=this;
-				console.log(_this.user)
+				let _this=this;
+				_this.user.status=7;
+				console.log(_this.user);
 				$.ajax({
 					url:"/nurse/allUser",
 					data:_this.user,
 					success:function(data){
 						if(data.code==200){
-							_this.list=data.list;	
+							_this.list=data.list;
 						}
 					}
 				});
@@ -181,7 +180,7 @@
 					}
 				});
 			},
-			/*查询住院详情，传入的是用户id  传回来住院多少天，花了多少钱*/
+			/*查询住院费详情，传入的是用户id  传回来病床价格，*/
 			queryHospitalizationSpend:function(id){
 				var _this=this;
 				_this.uid=id;
@@ -190,7 +189,6 @@
 					data:{id:id},
 					success:function(data){
 						if(data.code==200){
-							_this.bedList.days=data.list[0];
 							_this.bedList.price=data.list[1].price;
 							_this.bedList.money=data.list[0]*data.list[1].price;	
 						}
@@ -250,7 +248,7 @@
 					data:{id:id},
 					success:function(data){
 						if(data.code==200){
-							_this.spend=data.list[0]+_this.bedList.money;
+							_this.spend=data.list[0]+data.list[1]+_this.bedList.money;
 							_this.uid="";
 						}
 					}

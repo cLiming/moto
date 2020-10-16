@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>出院结算</title>
-
+    <style>
+        .for{
+            width:280px;
+            float:left;
+        }
+    </style>
     <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="/js/vue.js"></script>
     <!-- 引入样式 -->
@@ -15,7 +20,30 @@
 </head>
 <body>
 <div id="app">
+    <div>
+        <el-form ref="form" :model="user" label-width="80px">
+            <div class="for">
+                <el-form-item label="输入用户名:" label-width="100px">
+                    <el-input v-model="user.name" ></el-input>
+                </el-form-item>
+            </div>
+            <div class="for">
+                <el-form-item label="选择性别:" label-width="100px">
+                    <el-select v-model="user.sex" >
+                        <el-option label="全部" value=""></el-option>
+                        <el-option label="男" value="男"></el-option>
+                        <el-option label="女" value="女"></el-option>
+                    </el-select>
+                </el-form-item>
+            </div>
+            <div class="for">
+                <el-form-item label="输入身份证号:" label-width="100px">
+                    <el-input v-model="user.idCard" ></el-input>
+                </el-form-item>
+            </div>
 
+        </el-form>
+    </div>
     <el-table :data="list" border style="width: 100%">
         <el-table-column fixed prop="id" label="编号"> </el-table-column>
         <el-table-column  prop="name" label="姓名"> </el-table-column>
@@ -28,11 +56,26 @@
         <el-table-column  prop="bedId" label="床位号"> </el-table-column>
         <el-table-column  label="操作">
             <template slot-scope="scope">
-                <el-button  v_if="shenghei" @click="checkUser(scope.row)" type="primary" plain size="small" >同意</el-button>
+                <el-button   @click="payUser(scope.row)" type="primary" plain size="small" >结算费用</el-button>
             </template>
         </el-table-column>
     </el-table>
-
+    <el-dialog title="费用清单" :visible.sync="showListVisible" width="90%">
+        <el-button type="text" disabled>医疗项目费用:</el-button>
+        <el-button type="text">￥{{projectMoney}}</el-button>
+        <el-button type="text" disabled>病床费用:</el-button>
+        <el-button type="text">￥{{bedMoney}}</el-button>
+        <el-button type="text" disabled>药品费用:</el-button>
+        <el-button type="text">￥{{drugMoney}}</el-button>
+        <el-button type="text" disabled>总费用:</el-button>
+        <el-button type="text">￥{{allMoney}}</el-button>
+        <el-button type="text" disabled>余额:</el-button>
+        <el-button type="text">￥{{onlyMoney}}</el-button>
+        <span slot="footer" class="dialog-footer">
+				<el-button type="primary" @click="pay">结算</el-button>
+                <el-button type="primary" @click="showListVisible = false">取消</el-button>
+			</span>
+    </el-dialog>
 </div>
 <script type="text/javascript">
     new Vue({
@@ -40,80 +83,110 @@
         data:{
             uid:"",
             list:[],
+            showListVisible:false,
             user:{
+                status:null,
+                name:"",
+                sex:"",
+                idCard:"",
+                doctor:null,
+                deptId:null,
+                balance:0,
             },
-            shenghei:false,
-            jiesuan:false,
-            showAdviceVisible:false,
-            showProject:false,
-            adviceInfo:{
-                money:"",
-                adviceInfos:[],
-            },
-            prescription:{
-                drugs:[],
-                money:"",
-            },
-            dayList:{
-                days:"",
-                money:"",
-            },
-            adviceList:[],
-            adviceId:"",
+            projectMoney:0,
+            drugMoney:0,
+            bedMoney:0,
+            userMoney:0,
+            allMoney:0,
+            onlyMoney:0,
         },
         created:function(){
             this.selectData();
-            this.selectButton();
         },
         methods:{
             selectData:function(){
                 var _this=this;
+                _this.user.status=7;
+                console.log(_this.user);
                 $.ajax({
-                    url:"/nurse/leave",
-                    success:function(data){
-                        if(data.code==200){
-                            _this.list=data.list;
-
-                        }
-                    }
-                });
-            },
-            selectButton:function(){
-                var href=location.href;
-                var pid=href.split("?")[1].split("=")[1];
-                //发送请求
-                var _this=this;
-                $.ajax({
-                    url:"/workers/button",
-                    data:{pid:pid},
-                    success:function(data){
-                        if(data.code="200"){
-                            for(var i=0;i<data.list.length;i++){
-                                if(data.list[i].name=="已审核出院申请"){
-                                    _this.shenghei=true;
-                                }
-                            }
-                        }
-                    }
-                });
-            },
-            checkUser:function(user){
-                var _this=this;
-                _this.user=user;
-                $.ajax({
-                    url:"/nurse/leave",
-                    type:"put",
+                    url:"/nurse/allUser",
                     data:_this.user,
                     success:function(data){
                         if(data.code==200){
                             _this.list=data.list;
-                            _this.selectData();
-                            _this.user="";
                         }
                     }
                 });
             },
+            payUser:function (user) {
+                this.userMoney=user.balance;
+                this.queryHospitalizationSpend(user.id);
+                this.allSpend(user.id);
+                this.showListVisible=true;
+            },
+            queryHospitalizationSpend:function(id){
 
+                var _this=this;
+                _this.uid=id;
+                $.ajax({
+                    url:"/nurse/hospitalization",
+                    data:{id:id},
+                    success:function(data){
+                        if(data.code==200){
+                            _this.bedMoney=data.list[1].price;
+                        }
+                    }
+                });
+            },
+            //通过病人id查询药品费和医疗项目费
+            allSpend:function(id){
+                var _this=this;
+               _this.uid=id;
+                $.ajax({
+                    url:"/nurse/allspend",
+                    data:{id:id},
+                    success:function(data){
+                        if(data.code==200){
+                            _this.projectMoney=data.list[0];
+                            _this.drugMoney=data.list[1];
+
+                        }
+                    }
+                });
+            },
+            pay:function(){
+                this.showListVisible=false;
+                 let id=this.uid;
+                $.ajax({
+                    url:"/settlement/pay",
+                    data:{id:id},
+                    success:function(data){
+                        if(data.code==200){
+                            _this.projectMoney=data.list[0];
+                            _this.drugMoney=data.list[1];
+                            this.selectData();
+                        }
+                    }
+                });
+            }
+
+        },
+
+        watch: {
+            // 处理监听的逻辑，这个函数会在msg发生改变的时候执行
+            // value: 修改后的值
+            // oldValue: 修改前的值
+            drugMoney: function() {
+                this.allMoney=this.projectMoney+this.drugMoney+this.bedMoney;
+                this.onlyMoney=this.userMoney-this.allMoney;
+            },
+            user:{
+                //深度监听 监听对象中属性的变化
+                handler:function(newUser){
+                    this.selectData();
+                },
+                deep:true
+            }
         }
     });
 </script>

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.woniu.soft.entity.Adviceinfo;
@@ -163,7 +162,13 @@ public class NurseServiceImpl implements NurseService{
 		wrapper.eq(user.getSex()!="", "sex", user.getSex());
 		wrapper.eq(user.getIdCard()!="", "id_card", user.getIdCard());
 		wrapper.eq(user.getDoctor()!=null, "doctor", user.getDoctor());
-		wrapper.ge(user.getStatus()!=null, "status", user.getStatus());
+		if(user.getStatus()!=null){
+			wrapper.ge(user.getStatus()==3, "status", 3);
+			wrapper.lt(user.getStatus()==7, "status", 7);
+			wrapper.ge(user.getStatus()==7, "status", 3);
+		}
+
+
 		return userMapper.selectList(wrapper);
 	}
 	@Override
@@ -172,7 +177,8 @@ public class NurseServiceImpl implements NurseService{
 		if(id!=null&&id>0) {
 			Integer i=medAdviceMapper.selectSumPtotal(id);
 			Integer l=medAdviceMapper.selectSumDtotal(id);
-			list.add(i+l);
+			list.add(i);
+			list.add(l);
 		}
 		return list;
 	}
