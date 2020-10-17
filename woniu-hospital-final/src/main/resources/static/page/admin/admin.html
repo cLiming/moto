@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>角色权限管理</title>
+    <script type="text/javascript" src="/js/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="/js/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <!--:data 双向绑定的数据-->
+    <el-table :data="list" border style="width: 100%"> <!-- :prop 实体属性名称  表头 -->
+        <el-table-column fixed :span="4" prop="id" label="编号"></el-table-column>
+        <el-table-column :span="4" prop="role.id" label="角色名"> </el-table-column>
+        <el-table-column :span="6" label="操作"> <!-- slot-scopt:插槽 将组件内部每次循环的数据暴露到组件外部使用-->
+            <template slot-scope="scope">
+                <!--scope.row.主键:组件内部正在遍历的这一个实体的主键数据-->
+                <!--@click='showRole(scope.row.id)'绑定了点击事件 执行showRole方法，展示出模态框，并且将模态框中的多选框渲染出来-->
+                <el-button v-if="updateRolePermissionButton"
+                           @click="showPermission(scope.row.menu,scope.row.id)" type="text" size="small">修改角色权限</el-button>
+            </template>
+        </el-table-column> </el-table>
+    <!--修改权限模态框-->
+    <!--:visible.sync 动态绑定一个boolean值 当该值为true时 模态框显示 当该值为false时模态框隐藏-->
+    <el-dialog title="修改权限" :visible.sync="setPermissionDialogVisible"
+               width="30%">
+        <div>
+            <el-tree ref="tree" node-key="id" :data="menus" :props="props" show-checkbox
+                     :default-expand-all="true"
+                     :check-strictly="true" :check-on-click-node="true"
+                     @check-change="handleCheckChange" :expand-on-click-node="false"
+                     @node-click="clickNode">
+            </el-tree>
+        </div>
+        <span slot="footer" class="dialog-footer"> <el-button
+                @click="setPermissionDialogVisible = false">取 消</el-button> <el-button
+                type="primary" @click="setPermissions">修 改</el-button>
+		</span> </el-dialog>
+</div>
+<script type="text/javascript">
+    new Vue({
+        el:"#app",
+        data:{
+            list:[],
+            updateRolePermissionButton:false,
+            updateDeptPermissionDialogVisible:false,
+            props: {
+                label: "name",
+                children: "children"
+            },
+            menus: [],
+            permissions: [],
+            permissionsForm:{rid:0,permissions:[]},
+            setPermissionDialogVisible:false,
+        },
+        created:function(){
+            this.selectRoles();
+            this.selectButton();
+        },
+        methods:{
+            setPermissions:function(){
+                var _this=this;
+                $.ajax({
+                    url:"/role/permission",
+                    type:"post",
+                    data:JSON.stringify(_this.permissionsForm),
+                    contentType:"application/json;charset=utf-8",
+                    success:function(data){
+                        if(data.code=="200"){
+                            alert("设置权限成功");
+                            _this.setPermissionDialogVisible=false;
+                            _this.permissions=[];
+                            _this.permissionsForm.permissions=[];
+                            _this.permissionsForm.rid=0;
+                        }
+                    }
+                });
+            },
+            selectRoles:function(){
+                var _this = this;
+                $.ajax({
+                    url:"/role/getRolePermisssion",
+                    success:function(data){
+                        _this.list=data.list;
+                    }
+                });
+            },
+            //查询按钮信息
+            selectButton:function(){
+                var href=location.href;
+                var pid=href.split("?")[1].split("=")[1];
+                //发送请求
+                var _this=this;
+                $.ajax({
+                    url:"/workers/button",
+                    data:{pid:pid},
+                    success:function(data){
+                        if(data.code="200"){
+                            for(var i=0;i<data.list.length;i++){
+                                if(data.list[i].name=="修改角色权限"){
+                                    _this.updateRolePermissionButton=true;
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            showPermission:function(rolePermission,id){
+                this.setPermissionDialogVisible=true;
+                var _this=this;
+                //查询所有的权限
+                $.ajax({
+                    url:"/permission",
+                    success:function(data){
+                        //将所有的角色信息保存到vue的数据中
+                        _this.menus=data.list;
+                    }
+                });
+                _this.permissions=rolePermission;
+                _this.permissionsForm.permissions=_this.permissions;
+                _this.permissionsForm.rid=id;
+                _this.$refs.tree.setCheckedKeys(_this.permissions);
+            },
+            handleCheckChange: function(node, checked) {
+                if (checked) {
+                    if(this.permissions.indexOf(node.id)==-1){
+                        this.permissions.push(node.id);
+                    }
+                } else {
+                    //遍历数组删除节点id
+                    for (var i = 0; i < this.permissions.length; i++) {
+                        if (this.permissions[i] == node.id) {
+                            this.permissions.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+            },
+            clickNode: function(data, node) {
+                //全选/全不选子节点
+                var children = node.childNodes;
+                for (var i = 0; i < children.length; i++) {
+                    console.log(children);
+                    children[i].checked = node.checked;
+                }
+                //点击子设置父
+                var parent = node.parent;
+                while (parent) {
+                    //判断字节点是否至少有一个被选中
+                    for (var i = 0; i < parent.childNodes.length; i++) {
+                        if (parent.childNodes[i].checked) {
+                            parent.checked = true;
+                            break;
+                        }
+                    }
+                    parent=parent.parent;
+                }
+            },
+        }
+    })
+</script>
+</body>
+</html>

@@ -119,8 +119,7 @@ public class NurseController {
 	}
 	//查询退药申请
 	@RequestMapping("returnDrug")
-	public JSONResult selectRerurnDrug() throws Exception {
-		System.err.println(nurseService.selectRerurnDrug());
+	public JSONResult selectRerurnDrug(ReturnApplication returnApplication) throws Exception {
 		return new JSONResult("200","success",nurseService.selectRerurnDrug(),null);
 	}
 	
