@@ -13,6 +13,30 @@
 </head>
 <body>
 	<div id="app">
+		<div>
+			<el-form ref="form" :model="user" label-width="80px">
+				<div class="for">
+					<el-form-item label="输入用户名:" label-width="100px">
+						<el-input v-model="user.name" ></el-input>
+					</el-form-item>
+				</div>
+				<div class="for">
+					<el-form-item label="选择性别:" label-width="100px">
+						<el-select v-model="user.sex" >
+							<el-option label="全部" value=""></el-option>
+							<el-option label="男" value="男"></el-option>
+							<el-option label="女" value="女"></el-option>
+						</el-select>
+					</el-form-item>
+				</div>
+				<div class="for">
+					<el-form-item label="输入身份证号:" label-width="100px">
+						<el-input v-model="user.idCard" ></el-input>
+					</el-form-item>
+				</div>
+
+			</el-form>
+		</div>
 		<el-table :data="list" border style="width: 100%">
 		<el-table-column fixed prop="id" label="编号"> </el-table-column>
 		<el-table-column prop="name" label="姓名"> </el-table-column> 
@@ -291,6 +315,15 @@
 						_this.selectUser();
 					}
 					
+				}
+			},
+			watch:{
+				user:{
+					//深度监听 监听对象中属性的变化
+					handler:function(newUser){
+						this.selectUser();
+					},
+					deep:true
 				}
 			}
 		});

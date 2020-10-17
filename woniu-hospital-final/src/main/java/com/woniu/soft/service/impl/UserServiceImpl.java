@@ -1,5 +1,6 @@
 package com.woniu.soft.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.woniu.soft.entity.DailyList;
@@ -128,21 +129,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 	}
 	@Override
 	public List<User> getUserAdmissionregistration(User user) {
-		QueryWrapper<User> queryWorker = new QueryWrapper<>();
-		//通过前端传过来的用户名称查出这个对象的所有信息
-		if(user!=null&&user.getName()!=null&&user.getName()!="") {
-			queryWorker.like("name", user.getName());
-			queryWorker.eq("status", 3);
-			queryWorker.or();
-			queryWorker.eq("status", 4);
-			return userMapper.selectList(queryWorker);
-		}else {
-			queryWorker.eq("status", 3);
-			queryWorker.or();
-			queryWorker.eq("status", 4);
+		QueryWrapper<User> wrapper = new QueryWrapper<>();
+		ArrayList<Integer> list = new ArrayList<>();
+		list.add(3);
+		list.add(4);
+		wrapper.in("status",list);
+		wrapper.like(user.getName()!=""&&user.getName()!=null,"name",user.getName());
+		wrapper.eq(user.getSex()!=""&&user.getSex()!=null,"sex",user.getSex());
+		wrapper.eq(user.getIdCard()!=""&&user.getId()!=null,"id_card",user.getIdCard());
 
-			return userMapper.selectList(queryWorker);
-		}
+		return userMapper.selectList(wrapper);
+
 	}
 	@Override
 	public User userLogin(User user) throws IncorrectCredentialsException {

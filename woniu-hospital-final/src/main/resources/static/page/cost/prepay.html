@@ -112,9 +112,7 @@
 					var _this = this;
 					$.ajax({
 						url : "/user/getUserAdmissionregistration",
-						data : {
-							user : _this.user
-						},
+						data :  _this.user,
 						success : function(data) {
 							if (data.code == 200) {
 								_this.list = data.list;
@@ -195,22 +193,30 @@
 						data:_this.user,
 						success : function(data) {
 							if (data.code = "200") {
-								alert(_this.user.status);
 								if(_this.user.status==3){
 									alert("充值成功,同时扣除了床位费40");
 									_this.prepayDialogVisible=false;
 									_this.selectUser();
 								}else{
 									alert("充值成功");
+									_this.prepayDialogVisible=false;
 									_this.selectUser();
 								}
 								
 							}
 						}
 					});
-				}
-
-			}
+				},
+			},
+            watch:{
+                user:{
+                    //深度监听 监听对象中属性的变化
+                    handler:function(newUser){
+                        this.selectUser();
+                    },
+                    deep:true
+                }
+            }
 		});
 	</script>
 </body>
