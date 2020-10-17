@@ -36,12 +36,6 @@
 						</el-select>
 					</el-form-item>
 				</div>
-				<div class="for">
-					<el-form-item label="输入身份证号:" label-width="100px">
-						<el-input v-model="user.idCard" ></el-input>
-					</el-form-item>
-				</div>
-
 			</el-form>
 		</div>
 		<el-table :data="list" border style="width: 100%">
@@ -160,9 +154,7 @@
 					var _this = this;
 					$.ajax({
 						url : "/nurse/Admissionregistration",
-						data : {
-							user : _this.user
-						},
+						data : _this.user,
 						success : function(data) {
 							if (data.code == 200) {
 								_this.list = data.list;

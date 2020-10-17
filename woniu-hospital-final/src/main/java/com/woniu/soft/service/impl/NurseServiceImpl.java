@@ -217,17 +217,12 @@ public class NurseServiceImpl implements NurseService{
 	//护士的入院登记功能
 	@Override
 	public List<User> getregistration(User user) throws Exception{
-		QueryWrapper<User> queryWorker = new QueryWrapper<>();
-		//通过前端传过来的用户名称查出这个对象的所有信息
-		if(user!=null&&user.getName()!=null&&user.getName()!="") {
-			queryWorker.like("name", user.getName());
-			queryWorker.eq("status", 1);
-			return userMapper.selectList(queryWorker);
-		}else {
-			queryWorker.eq("status", 1);
-			return userMapper.selectList(queryWorker);
-		}
-
+		QueryWrapper<User> wrapper = new QueryWrapper<>();
+		wrapper.like(user.getName()!=""&&user.getName()!=null,"name",user.getName());
+		wrapper.eq(user.getSex()!=""&&user.getSex()!=null,"sex",user.getSex());
+		wrapper.eq(user.getIdCard()!=""&&user.getId()!=null,"id_card",user.getIdCard());
+		wrapper.eq("status", 1);
+		return userMapper.selectList(wrapper);
 	}
 	//查询所有的医生
 	@Override
@@ -260,7 +255,7 @@ public class NurseServiceImpl implements NurseService{
 	}
 	//按键点击  提交入院登记功能
 	@Override
-	public void updataAdmissionRegistration(User user) throws Exception{
+	public void updateAdmissionRegistration(User user) throws Exception{
 		if(user!=null&&user.getId()!=null&&user.getDoctor()!=null&&user.getNurse()!=null) {
 			UpdateWrapper<User> wrapper = new UpdateWrapper<>();
 			wrapper.eq("id", user.getId());
@@ -275,7 +270,7 @@ public class NurseServiceImpl implements NurseService{
 	}
 	//修改床位状态
 	@Override
-	public void updataBedStatus(int id) {
+	public void updateBedStatus(int id) {
 		UpdateWrapper<Bed> wrapper = new UpdateWrapper<>();
 		wrapper.eq("id", id);
 		wrapper.set("status", 1);
@@ -287,21 +282,21 @@ public class NurseServiceImpl implements NurseService{
 		return null;
 	}
 	@Override
-	public void updataUserDocotors(User user) {
+	public void updateUserDocotors(User user) {
 		UpdateWrapper<User> wrapper = new UpdateWrapper<>();
 		wrapper.eq("id", user.getId());
 		wrapper.set("doctor", user.getDoctor());
 		userMapper.update(null, wrapper);
 	}
 	@Override
-	public void updataUserNurse(User user) {
+	public void updateUserNurse(User user) {
 		UpdateWrapper<User> wrapper = new UpdateWrapper<>();
 		wrapper.eq("id", user.getId());
 		wrapper.set("nurse", user.getNurse());
 		userMapper.update(null, wrapper);
 	}
 	@Override
-	public void updataUserBed(User user) {
+	public void updateUserBed(User user) {
 		UpdateWrapper<User> wrapper = new UpdateWrapper<>();
 		wrapper.eq("id", user.getId());
 		wrapper.set("bed_id", user.getBedId());
