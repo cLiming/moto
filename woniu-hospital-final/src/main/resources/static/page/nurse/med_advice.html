@@ -19,7 +19,7 @@
 			<el-table-column prop="uId" label="用户名"> </el-table-column> 
 			<el-table-column prop="wId" label="医生名"> </el-table-column> 
 			<el-table-column prop="creatTime" label="创建时间"> </el-table-column>
-			<el-table-column prop="pre.id" label="处方号"></el-table-column>
+			<el-table-column prop="presciption.id" label="处方号"></el-table-column>
 			<el-table-column label="操作">
 			<template slot-scope="scope">
 				<el-row>
@@ -156,9 +156,9 @@
 					
 					_this.selectPreDrugDialogVisible=true;
 					for(var i=0;i<_this.records.length;i++){
-						if(_this.records[i].pre!=null&&id==_this.records[i].pre.id){
-							for(v in _this.records[i].pre.presDrugs){
-								_this.preUserDrugs.push(_this.records[i].pre.presDrugs[v]);
+						if(_this.records[i].prescription!=null&&id==_this.records[i].prescription.id){
+							for(v in _this.records[i].prescription.presDrugs){
+								_this.preUserDrugs.push(_this.records[i].prescription.presDrugs[v]);
 							}
 						}
 					}
@@ -185,7 +185,7 @@
 					_this.medAdvice.id=id;
 					for(var i=0;i<_this.records.length;i++){
 						if(_this.records[i].id==id){
-							if(_this.records[i].pre==null||_this.records[i].pre==""){
+							if(_this.records[i].prescription==null||_this.records[i].prescription==""){
 								$.ajax({
 									url : "/medAdvice/updateAdvice", 
 									data:_this.medAdvice,
