@@ -166,8 +166,8 @@ public class NurseServiceImpl implements NurseService{
 		wrapper.eq(user.getDoctor()!=null, "doctor", user.getDoctor());
 		if(user.getStatus()!=null){
 			wrapper.ge(user.getStatus()==3, "status", 3);
-			wrapper.lt(user.getStatus()==7, "status", 7);
-			wrapper.ge(user.getStatus()==7, "status", 3);
+			wrapper.lt(user.getStatus()==6, "status", 6);
+			wrapper.ge(user.getStatus()==6, "status", 3);
 		}
 
 
