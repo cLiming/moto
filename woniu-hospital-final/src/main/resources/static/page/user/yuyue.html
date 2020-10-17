@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="/js/vue.js"></script>
+<!-- 引入样式 -->
+<link rel="stylesheet"
+		href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	<style type="text/css">
+		.for{
+			width:500px;
+			margin-left:250px;
+		}
+		#btn{
+			margin-left:0px;
+		}
+	</style>
+</head>
+<body>
+	<div id="app">
+		<h1>预约页面</h1>
+		<div class="for">
+		<el-form ref="form" :model="user" label-width="80px">
+				  <el-form-item label="输入用户名:" label-width="100px" >
+				    <el-input v-model="user.name" ></el-input>
+
+				  <el-form-item label="选择性别:" label-width="100px">
+				    <el-select v-model="user.sex" >
+					    <el-option label="男" value="男"></el-option>
+					    <el-option label="女" value="女"></el-option>
+				    </el-select>
+				  </el-form-item>
+				   <el-form-item label="电话号码:" label-width="100px">
+				    <el-input v-model="user.tel" ></el-input>
+				  	</el-form-item>
+
+				   <el-form-item label="输入身份证号:" label-width="100px">
+				    <el-input v-model="user.idCard" ></el-input>
+				  	</el-form-item>
+			 
+				   <el-form-item label="年龄:" label-width="100px">
+				     <el-input v-model="user.age" ></el-input>
+				  	</el-form-item>
+				
+				 <el-form-item label="选择科室：" label-width="100px">
+					<template>
+					  <el-select v-model="user.deptId" placeholder="请选择">
+					    <el-option
+					      v-for="item in dept"
+					      :key="item.id"
+					      :label="item.name"
+					      :value="item.id">
+					    </el-option>
+					  </el-select>
+					</template>
+					</el-form-item>
+				<br />
+				 <div id="btn">
+				 
+					 <el-row>
+						  <el-button @click="updateUserBtn()">确认预约</el-button>
+						  <el-button type="primary">取消</el-button>
+					</el-row>
+					
+				</div>
+				
+			</el-form>
+			</div>
+		</div>
+	<script>
+		new Vue({
+			el:"#app",
+			data:{
+				selectUserObj:{
+					id:"",
+					name:"",
+					sex:"",
+					age:"",
+					tel:"",
+					password:"",
+					deptId:"",
+					idCard:""
+				},
+				user:{
+					id:"",
+					name:"",
+					sex:"",
+					age:"",
+					tel:"",
+					password:"",
+					deptId:"",
+					idCard:""
+		        },
+		        dept:[],
+			},
+			created:function(){
+				this.selectUser();
+				this.selectdept();
+				
+			},
+			methods:{
+				selectdept: function() {
+					var _this = this;
+					$.ajax({
+						url : "/user/getdept",
+						success : function(data) {
+							if (data.code == 200) {
+								_this.dept = data.list;
+								
+							}
+						}
+					});
+				},
+				selectUser : function() {
+					var _this = this;
+					var reg = new RegExp("(^|&)tel=([^&]*)(&|$)");
+					var r = window.location.search.substr(1).match(reg);
+					var usertel = decodeURI(r[2]);
+					this.user.tel=usertel;
+					$.ajax({
+						url : "/user/getUser",
+						data : {
+							user : _this.user
+						},
+						success : function(data) {
+							if (data.code == 200) {
+								for(var i=0;i<data.list.length;i++){
+									if(usertel=data.list[i].tel){
+										_this.selectUserObj = data.list[i];
+									}
+								}
+							}
+						}
+					});
+				},
+				updateUserBtn: function() {
+					var _this = this;
+					var reg = new RegExp("(^|&)tel=([^&]*)(&|$)");
+					var r = window.location.search.substr(1).match(reg);
+					var usertel = decodeURI(r[2]);
+					_this.user.tel=usertel;
+					alert(_this.selectUserObj.name);
+					if(_this.selectUserObj.name==""||_this.selectUserObj.name==null){
+						if(_this.user.name!=""&&_this.user.deptId!=""&&_this.user.age!=""&&_this.user.sex!=""&&_this.user.idCard!=""){
+							$.ajax({
+								url : "/user/updateUserButton",
+								data :  _this.user,
+								success : function(data) {
+									if(data.code="200"){
+										alert("预约成功");
+										window.location ="/page/user/preyuyue.html";
+									}
+								},
+							});
+							_this.selectUserObj.name=_this.user.name;
+						}else{
+							alert("请填写完整信息");
+						}
+					}else{
+						alert("已经预约");
+					}
+					
+				},
+				
+			},
+		})
+	</script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.woniu.soft.service;
 
+import com.woniu.soft.entity.MedAdvice;
 import com.woniu.soft.entity.Prescription;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -19,5 +20,9 @@ public interface PrescriptionService extends IService<Prescription> {
 		void removeByAdId(Integer adId)throws Exception;
 	
 		void updateStatusEq1(Prescription prescription)throws Exception;
+
+		Prescription getPresiption(MedAdvice medAdvice) throws Exception;
+
+		void updataPrescription(Prescription prescription) throws Exception;
 	
 }

@@ -77,5 +77,52 @@ public class WorkersServiceImpl extends ServiceImpl<WorkersMapper, Workers> impl
 		queryWorker.eq("tel",tel);
 		return workersMapper.selectOne(queryWorker);
 	}
-	
+
+
+
+
+	@Override
+	public List<Workers> getworker(Workers worker) throws Exception{
+		QueryWrapper<Workers> queryWorker = new QueryWrapper<>();
+		if(worker!=null&&worker.getName()!=null&&!worker.getName().equals("")) {
+			queryWorker.like("name", worker.getName());
+			return workersMapper.selectList(queryWorker);
+		}else {
+			return workersMapper.selectList(null);
+		}
+
+	}
+	@Override
+	public void deleteWorker(Integer id) throws Exception{
+		// TODO Auto-generated method stub
+		workersMapper.deleteById(id);
+	}
+	@Override
+	public void insertworker(Workers worker) throws Exception{
+		//先判断电话是否存在 不存在再进行新增
+		if(worker!=null) {
+			QueryWrapper<Workers> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("tel", worker.getTel());
+			Workers workers = workersMapper.selectOne(queryWrapper);
+			if(workers==null) {
+				workersMapper.insert(worker);
+			}
+		}
+	}
+	@Override
+	public Workers getoneworker(Workers worker) throws Exception{
+		QueryWrapper<Workers> queryWorker = new QueryWrapper<>();
+		if(worker!=null&&worker.getId()!=null&&!worker.getId().equals("")){
+			queryWorker.eq("id", worker.getId());
+			return workersMapper.selectOne(queryWorker);
+		}else {
+			return null;
+		}
+	}
+	@Override
+	public void updateworkers(Workers worker) throws Exception{
+		workersMapper.updateById(worker);
+
+	}
+
 }

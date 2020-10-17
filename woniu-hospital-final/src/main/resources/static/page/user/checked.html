@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>护士页面</title>
+<script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="/js/vue.js"></script>
+<!-- 引入样式 -->
+<link rel="stylesheet"
+	href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+	<div id="app">
+		<el-table :data="list" border style="width: 100%">
+		<el-table-column fixed prop="id" label="编号"> </el-table-column>
+		<el-table-column prop="name" label="姓名"> </el-table-column> 
+		<el-table-column prop="sex" label="性别"> </el-table-column> 
+		<el-table-column prop="age" label="年龄"> </el-table-column> 
+		<el-table-column prop="idCard" label="身份证号"> </el-table-column> 
+		<el-table-column prop="tel" label="电话"> </el-table-column> 
+		<el-table-column prop="deptId" label="科室"> </el-table-column> 
+		<el-table-column prop="doctor" label="医生"></el-table-column> 
+		<el-table-column prop="nurse" label="护士"></el-table-column> 
+		<el-table-column prop="bedId" label="床位号"></el-table-column>
+		<el-table-column prop="status" label="状态"></el-table-column>
+		</el-table>
+		
+	</div>
+	<script type="text/javascript">
+		new Vue({
+			el : "#app",
+			data : {
+				list : [],
+				user : {
+					id:"",
+					name : "",
+					doctor:"",
+					nurse:"",
+					bedId:""
+				},
+				allDoctors : [],
+				allNurse : [],
+			},
+			created : function() {
+				this.selectUser();
+			},
+			methods : {
+				selectAllDocotor : function(id) {
+					var _this = this;
+					_this.user.id=id;
+					$.ajax({
+						url : "/nurse/getAllDocotor",
+						data:_this.user,
+						success : function(data) {
+							if (data.code = "200") {
+								_this.allDoctors = data.list;
+								for(var i=0;i<_this.allDoctors.length;i++){
+									if(_this.list[0].doctor==_this.allDoctors[i].id){
+										_this.list[0].doctor=_this.allDoctors[i].name;
+									}
+								}
+							}
+						}
+					});
+				},
+				selectAllNurse : function(id) {
+					var _this = this;
+					_this.user.id=id;
+					$.ajax({
+						url : "/nurse/getAllNurse",
+						data:_this.user,
+						success : function(data) {
+							if (data.code = "200") {
+								_this.allNurse = data.list;
+								for(var i=0;i<_this.allNurse.length;i++){
+									if(_this.list[0].nurse==_this.allNurse[i].id){
+										_this.list[0].nurse=_this.allNurse[i].name;
+									}
+								}
+							}
+						}
+					});
+				},
+				selectUser : function() {
+					var reg = new RegExp("(^|&)tel=([^&]*)(&|$)");
+					var r = window.location.search.substr(1).match(reg);
+					var usertel = decodeURI(r[2]);
+					var _this = this;
+					_this.user.tel=usertel;
+					$.ajax({
+						url : "/user/getUser",
+						data :_this.user,
+						success : function(data) {
+							if (data.code == 200) {
+								_this.list = data.list;
+								if(_this.list[0].status==0){
+									_this.list[0].status="注册状态"
+								}else if(_this.list[0].status==1){
+									_this.list[0].status="预约状态"
+								}else if(_this.list[0].status==2){
+									_this.list[0].status="入院审核状态"
+								}else if(_this.list[0].status==3){
+									_this.list[0].status="入院状态"
+								}else if(_this.list[0].status==4){
+									_this.list[0].status="住院状态"
+								}else if(_this.list[0].status==5){
+									_this.list[0].status="出院申请状态"
+								}else if(_this.list[0].status==6){
+									_this.list[0].status="申请完成，未结算状态"
+								}else if(_this.list[0].status==7){
+									_this.list[0].status="已结算出院状态"
+								}
+								_this.selectAllDocotor();
+								_this.selectAllNurse();
+							}
+						}
+					});
+				},
+				
+			}	
+		});
+	</script>
+</body>
+</html>

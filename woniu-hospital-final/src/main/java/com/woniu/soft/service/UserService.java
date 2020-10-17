@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.woniu.soft.entity.Dept;
 import com.woniu.soft.entity.User;
+import org.apache.shiro.authc.IncorrectCredentialsException;
 
 /**
  * <p>
@@ -20,5 +22,19 @@ public interface UserService extends IService<User> {
 	boolean updateUserStatusStay(Integer uid)	throws Exception;
 	List<User> selectAllStayUserInfo()throws Exception;
 	List<User> selectAllLeavingUserInfo()throws Exception;
-	
+
+
+
+	List<User> getUser(User user) throws Exception;
+
+	void updateBalance(User user) throws Exception;
+
+	List<User> getUserAdmissionregistration(User user) throws Exception;
+
+	User userLogin(User user) throws IncorrectCredentialsException;
+
+	List<Dept> getdept();
+
+	void updateUserButton(User user);
+
 }
