@@ -5,6 +5,7 @@ import com.woniu.soft.entity.Adviceinfo;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.woniu.soft.entity.MedAdvice;
 
 /**
  * <p>
@@ -17,4 +18,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface AdviceinfoService extends IService<Adviceinfo> {
 	List<Adviceinfo> selectAdviceinfosByMid(Integer mid)throws Exception;
 	void removeByMid(Integer mid)throws Exception;
+	List<Adviceinfo> getAdviceinfo(MedAdvice medAdvice);
 }

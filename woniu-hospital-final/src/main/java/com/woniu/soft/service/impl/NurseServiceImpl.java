@@ -60,11 +60,14 @@ public class NurseServiceImpl implements NurseService{
 	@Resource
 	private WorkersMapper workersMapper;
 	@Override
-	public List<User> selectLogById(Integer id) {
+	public List<User> selectLogById(User user) {
 		QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-		queryWrapper.eq("nurse", id);
+		queryWrapper.eq(user.getNurse()!=null,"nurse", user.getNurse());
+		queryWrapper.like(user.getName()!="","name",user.getName());
+		queryWrapper.eq(user.getSex()!="","sex",user.getSex());
 		return userMapper.selectList(queryWrapper);
 	}
+
 	@Override
 	public void insertPio(Pio pio) {
 		pioMapper.insert(pio);
@@ -85,10 +88,12 @@ public class NurseServiceImpl implements NurseService{
 		return pioMapper.selectList(wrapper);
 	}
 	@Override
-	public List<User> selectUserByStatus() {
+	public List<User> selectUserByStatus(User user) {
 		QueryWrapper<User> wrapper = new QueryWrapper<>();
-		wrapper.eq("status",4);
-
+		wrapper.eq(user.getStatus()!=null,"status",4);
+		wrapper.like(user.getName()!="","name",user.getName());
+		wrapper.eq(user.getSex()!="","sex",user.getSex());
+		wrapper.eq(user.getIdCard()!="","id_card",user.getIdCard());
 		return userMapper.selectList(wrapper);
 	}
 	@Override
@@ -166,8 +171,8 @@ public class NurseServiceImpl implements NurseService{
 		wrapper.eq(user.getDoctor()!=null, "doctor", user.getDoctor());
 		if(user.getStatus()!=null){
 			wrapper.ge(user.getStatus()==3, "status", 3);
-			wrapper.lt(user.getStatus()==7, "status", 7);
-			wrapper.ge(user.getStatus()==7, "status", 3);
+			wrapper.lt(user.getStatus()==6, "status", 6);
+			wrapper.ge(user.getStatus()==6, "status", 3);
 		}
 
 
@@ -259,7 +264,7 @@ public class NurseServiceImpl implements NurseService{
 		if(user!=null&&user.getId()!=null&&user.getDoctor()!=null&&user.getNurse()!=null) {
 			UpdateWrapper<User> wrapper = new UpdateWrapper<>();
 			wrapper.eq("id", user.getId());
-			wrapper.set("status", 2);
+			wrapper.set("status", 3);
 			userMapper.update(null, wrapper);
 			DailyList dailyList = new DailyList();
 			dailyList.setStatus(0);

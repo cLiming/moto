@@ -6,7 +6,7 @@ import com.woniu.soft.entity.*;
 
 public interface NurseService {
 	
-	public List<User> selectLogById(Integer id);
+	public List<User> selectLogById( User user);
 
 	public void insertPio(Pio pio);
 
@@ -16,7 +16,7 @@ public interface NurseService {
 
 	public List<Pio> selectPioById(Integer uid,Integer wid);
 
-	public List<User> selectUserByStatus();
+	public List<User> selectUserByStatus(User user);
 
 	public List<MedAdvice> selectAdvices(Integer id);
 

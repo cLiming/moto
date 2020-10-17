@@ -20,4 +20,8 @@ public interface MedAdviceService extends IService<MedAdvice> {
 	Page selectByWidLimit(Integer wid,Integer pageIndex,Integer pageNum) throws Exception;
 	
 	List<MedAdvice> selectListByStatus(Integer status) throws Exception;
+
+	List<MedAdvice> getAdvice(Page<MedAdvice> page);
+	void updateAdvice(MedAdvice medAdvice);
+
 }

@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>护士页面</title>
-<script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+	<script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="/js/vue.js"></script>
+
 <!-- 引入样式 -->
 <link rel="stylesheet"
 	href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
@@ -19,11 +20,11 @@
 			<el-table-column prop="uId" label="用户名"> </el-table-column> 
 			<el-table-column prop="wId" label="医生名"> </el-table-column> 
 			<el-table-column prop="creatTime" label="创建时间"> </el-table-column>
-			<el-table-column prop="pre.id" label="处方号"></el-table-column>
+			<el-table-column prop="prescription.id" label="处方号"></el-table-column>
 			<el-table-column label="操作">
 			<template slot-scope="scope">
 				<el-row>
-				  <el-button @click="selectPreDrug(scope.row.pre.id)"
+				  <el-button @click="selectPreDrug(scope.row.prescription.id)"
 					size="small">查询处方药品</el-button>
 				</el-row>
 				<br>
@@ -61,7 +62,7 @@
 					id:"",
 					name:""
 				},
-				prescription:{
+				pres:{
 					id:""
 				},
 				medAdvice:{
@@ -83,11 +84,11 @@
 						url : "/drug/getDrugs",
 						success : function(data) {
 							_this.allDrugs=data.list;
-							//alert("哈哈哈哈哈哈哈");
+							alert("哈哈哈哈哈哈哈");
 							for(var i=0;i<_this.preUserDrugs.length;i++){
 								for(var j=0;j<_this.allDrugs.length;j++){
 									if(_this.preUserDrugs[i].drugId=_this.allDrugs[j].id){
-										
+
 										_this.preUserDrugs[i].drugId=_this.allDrugs[j].name;
 									}
 								}
@@ -98,13 +99,13 @@
 				selectMedAdvice:function() {
 					var _this = this;
 					$.ajax({
-						url : "/medAdvice/getAdvice", //medAdvice/getAdvice
-						type:"post",
-						dataType:"json",
+						url : "/medAdvice/getAdvice",
 						success : function(data) {
+
 							if (data.code == 200) {
 								_this.page=data.obj;
 								_this.records =data.obj.records;
+
 								_this.selectUser();
 								
 							} 
@@ -150,15 +151,16 @@
 					});
 				},
 				selectPreDrug:function(id){
+
 					var _this=this;
 					_this.preUserDrugs=[],
-					_this.prescription.id=id;
+					_this.pres.id=id;
 					
 					_this.selectPreDrugDialogVisible=true;
 					for(var i=0;i<_this.records.length;i++){
-						if(_this.records[i].pre!=null&&id==_this.records[i].pre.id){
-							for(v in _this.records[i].pre.presDrugs){
-								_this.preUserDrugs.push(_this.records[i].pre.presDrugs[v]);
+						if(_this.records[i].prescription !=null&&id==_this.records[i].prescription.id){
+							for(v in _this.records[i].prescription.presDrugs){
+								_this.preUserDrugs.push(_this.records[i].prescription.presDrugs[v]);
 							}
 						}
 					}
@@ -169,7 +171,7 @@
 					//alert(_this.prescription.id);
 					$.ajax({
 						url : "/prescription/updatePrescription", 
-						data:_this.prescription,
+						data:_this.pres,
 						type:"post",
 						success:function(data) {
 							if (data.code == 200) {
@@ -185,7 +187,7 @@
 					_this.medAdvice.id=id;
 					for(var i=0;i<_this.records.length;i++){
 						if(_this.records[i].id==id){
-							if(_this.records[i].pre==null||_this.records[i].pre==""){
+							if(_this.records[i].prescription==null||_this.records[i].prescription==""){
 								$.ajax({
 									url : "/medAdvice/updateAdvice", 
 									data:_this.medAdvice,

@@ -24,4 +24,15 @@ public interface WorkersService extends IService<Workers> {
 	List<Menu> selectWokerPermissions(Workers worker);
 
 	Workers selectByWorkerName(String name);
+
+
+	List<Workers> getworker(Workers worker) throws Exception;
+
+	void deleteWorker(Integer id) throws Exception;
+
+	void insertworker(Workers worker) throws Exception;
+
+	Workers getoneworker(Workers worker) throws Exception;
+
+	void updateworkers(Workers worker) throws Exception;
 }

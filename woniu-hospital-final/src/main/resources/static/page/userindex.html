@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>首页</title>
+
+		<!-- 引入vue -->
+		<script src="/js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="/lib/theme-chalk/index.css">
+		<link rel="stylesheet" href="/css/new_file1.css">
+		<!-- 引入组件库 -->
+		<script src="/lib/index.js"></script>
+		<!-- 引入axios -->
+		<!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+		
+	
+		
+	</head>
+	<body>
+		<div id="nav">
+			<div id="app">
+				<el-container>
+				  <el-header>
+					  <div class="dingbu">
+					  	<el-row :gutter="24">
+					  	  <el-col :span="1"><div ></div></el-col>
+					  	  <el-col :span="4"><div ><span>LOGO</span></div></el-col>
+					  	  <el-col :span="8"><div ></div></el-col>
+					  	  <el-col :span="6"><div ></div></el-col>
+					  	  <el-col :span="1"><div ><el-avatar icon="el-icon-user-solid" :src="url"></el-avatar></div></el-col>
+					  	  <el-col :span="2"><div ><span style="font-size: 15px;">{{name}}</span></div></el-col>
+					  	</el-row>
+					  </div>
+				  </el-header>
+				  <el-container>
+				    <el-aside>
+						<el-col :span="24">
+							<el-menu class="el-menu-vertical-demo" >
+								<div id="mokuaiming">
+									<a href="#">蜗牛医院住院部INF预约系统</a>
+								</div>
+								 <a class="a-class" :href="urls" target="main">预约页面</a>
+								<br/>
+								<a class="a-class" :href="urlss" target="main">查看住院状态</a>
+							</el-menu>
+			
+						</el-col>
+						<el-col :span="24">
+							<div id="out">
+								<a href="/logout"><i class="el-icon-loading"></i>注销</a>
+							</div>
+						</el-col>
+					</el-aside>
+				    <el-main>
+						<iframe width="100%" height="100%" frameborder="0" scrolling="yes"  name="main" class="main">
+						</iframe>
+					</el-main>
+					</el-container>
+				 </el-container>
+			</div>
+		</div>
+	</div>
+	
+	
+		<script>
+		var vm=new Vue({
+			el:"#app",
+			data:{
+				menus:[],
+				name:"",
+				tel:"",
+				visible: false,
+				url: '/img/timg.jpeg',
+				urls:"",
+				urlss:""
+			},
+			created:function(){
+				var reg = new RegExp("(^|&)name=([^&]*)(&|$)");
+				var r = window.location.search.substr(1).match(reg);
+				var workername = decodeURI(r[2]);
+				var reg = new RegExp("(^|&)tel=([^&]*)(&|$)");
+				var r = window.location.search.substr(1).match(reg);
+				var usertel = decodeURI(r[2]);
+				if(workername!="未登记姓名"){
+					
+					this.urls="/page/user/preyuyue.html";
+					this.urlss="/page/user/checked.html?tel="+usertel;
+				}else{
+					
+					this.urls="/page/user/yuyue.html?tel="+usertel;
+					this.urlss="/page/user/checked.html?tel="+usertel;
+				}
+				
+				this.name=workername;
+				this.tel=usertel;
+				
+			}
+		});
+		</script>
+	</body>
+</html>

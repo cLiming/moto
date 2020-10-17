@@ -21,4 +21,7 @@ public interface DrugService extends IService<Drug> {
 	void updateDrugPrice(Integer drugId,double price)throws Exception;
 	List<DrugEntity> selectDrugEntity(Integer id) throws Exception;
 	Page selectDrugs(Integer id,String name,Integer pageIndex,Integer PageNum)throws Exception;
+
+	List<Drug> getDrugs();
+
 }

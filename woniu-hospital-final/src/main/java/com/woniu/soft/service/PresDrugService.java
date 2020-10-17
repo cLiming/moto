@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.woniu.soft.entity.PresDrug;
+import com.woniu.soft.entity.Prescription;
 
 /**
  * <p>
@@ -17,4 +18,6 @@ public interface PresDrugService extends IService<PresDrug> {
 	List<PresDrug> selectListByPid(Integer pid)throws Exception;
 	
 	void removeByPid(Integer pid)throws Exception;
+
+	List<PresDrug> getpresDrug(Prescription presiption);
 }

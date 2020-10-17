@@ -31,10 +31,12 @@ public class NurseController {
 	private NurseService nurseService;
 	@GetMapping
 	//查询该护士负责的所有病人,不管任何状态的病人
-	public JSONResult selectLogById() {
+	public JSONResult selectLogById(User user) {
+
 		Subject subject = SecurityUtils.getSubject();
 		Workers worker = (Workers)subject.getPrincipal();
-		return new JSONResult("200","success",nurseService.selectLogById(worker.getId()),null);
+		user.setNurse(worker.getId());
+		return new JSONResult("200","success",nurseService.selectLogById(user),null);
 	}
 	
 	@PostMapping
@@ -67,14 +69,15 @@ public class NurseController {
 	}
 	//查询所有提交出院申请的病人,
 	@GetMapping ("leave")
-	public JSONResult selectUserByStatus() throws Exception {
-
-		return new JSONResult("200","success",nurseService.selectUserByStatus(),null);
+	public JSONResult selectUserByStatus(User user) throws Exception {
+		System.err.println(user);
+		return new JSONResult("200","success",nurseService.selectUserByStatus(user),null);
 	}
 	//修改用户状态,将提交出院申请的用户更改为已审核
 	@PutMapping("leave")
 	public JSONResult updateUser(User user) throws Exception {
-		user.setStatus(6);
+		System.err.println(user);
+		user.setStatus(5);
 		nurseService.updateUserInfo(user);
 		return new JSONResult("200","success",null,null);
 	}

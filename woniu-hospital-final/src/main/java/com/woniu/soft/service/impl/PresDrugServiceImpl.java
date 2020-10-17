@@ -1,6 +1,7 @@
 package com.woniu.soft.service.impl;
 
 import com.woniu.soft.entity.PresDrug;
+import com.woniu.soft.entity.Prescription;
 import com.woniu.soft.mapper.PresDrugMapper;
 import com.woniu.soft.service.PresDrugService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -10,6 +11,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -21,6 +24,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PresDrugServiceImpl extends ServiceImpl<PresDrugMapper, PresDrug> implements PresDrugService {
+	@Resource
+	private PresDrugMapper presDrugMapper;
 
 	@Override
 	public List<PresDrug> selectListByPid(Integer pid) throws Exception {
@@ -37,4 +42,11 @@ public class PresDrugServiceImpl extends ServiceImpl<PresDrugMapper, PresDrug> i
 		this.remove(PresDrugWrapper);
 	}
 
+	@Override
+	public List<PresDrug> getpresDrug(Prescription presiption) {
+		QueryWrapper<PresDrug> PresDrugWrapper = new QueryWrapper<PresDrug>();
+		PresDrugWrapper.eq("pres_id", presiption.getId());
+		List<PresDrug> DrugList = this.list(PresDrugWrapper);
+		return DrugList;
+	}
 }

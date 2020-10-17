@@ -1,6 +1,7 @@
 package com.woniu.soft.service.impl;
 
 import com.woniu.soft.entity.Adviceinfo;
+import com.woniu.soft.entity.MedAdvice;
 import com.woniu.soft.mapper.AdviceinfoMapper;
 import com.woniu.soft.service.AdviceinfoService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -10,6 +11,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -21,6 +24,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AdviceinfoServiceImpl extends ServiceImpl<AdviceinfoMapper, Adviceinfo> implements AdviceinfoService {
+	@Resource
+	private AdviceinfoMapper adviceinfoMapper;
 	@Override
 	public List<Adviceinfo> selectAdviceinfosByMid(Integer mid) throws Exception {
 		QueryWrapper<Adviceinfo> AdviceinfoWrapper = new QueryWrapper<Adviceinfo>();
@@ -37,4 +42,12 @@ public class AdviceinfoServiceImpl extends ServiceImpl<AdviceinfoMapper, Advicei
 		this.remove(AdviceinfoWrapper);
 	}
 
+	@Override
+	public List<Adviceinfo> getAdviceinfo(MedAdvice medAdvice) {
+		QueryWrapper<Adviceinfo> AdviceinfoWrapper = new QueryWrapper<Adviceinfo>();
+		AdviceinfoWrapper.eq("med_advice_id", medAdvice.getId());
+		//System.err.println("id"+medAdvice.getId());
+		List<Adviceinfo> adviceinfos = this.list(AdviceinfoWrapper);
+		return adviceinfos;
+	}
 }

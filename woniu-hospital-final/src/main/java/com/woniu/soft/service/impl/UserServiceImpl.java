@@ -2,6 +2,11 @@ package com.woniu.soft.service.impl;
 
 import java.util.List;
 
+import com.woniu.soft.entity.DailyList;
+import com.woniu.soft.entity.Dept;
+import com.woniu.soft.mapper.DailyListMapper;
+import com.woniu.soft.mapper.DeptMapper;
+import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -10,6 +15,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.woniu.soft.entity.User;
 import com.woniu.soft.mapper.UserMapper;
 import com.woniu.soft.service.UserService;
+
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -21,7 +28,12 @@ import com.woniu.soft.service.UserService;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-
+	@Resource
+	private UserMapper userMapper;
+	@Resource
+	private DailyListMapper dailyListMapper;
+	@Resource
+	private DeptMapper deptMapper;
 	@Override
 	public List<User> selectListByWid(Integer wid) throws Exception {
 		// 创建Wrapper对象
@@ -68,5 +80,123 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		userWrapper.eq("status", 4);
 		return this.list(userWrapper);
 	}
+	@Override
+	public List<User> getUser(User user) throws Exception{
+		QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+		//System.err.println("tel"+user.getTel());
+		if(user!=null) {
+			if(user.getName()!=null&&!user.getName().equals("")) {
+				queryWrapper.like("name", user.getName());
+			}else if(user.getTel()!=null&&!user.getTel().equals("")){
+				queryWrapper.eq("tel", user.getTel());
+			}else if(user.getIdCard()!=null&&!user.getIdCard().equals("")){
+				queryWrapper.eq("id_card", user.getIdCard());
+			}
+			return userMapper.selectList(queryWrapper);
+		}else {
+			return userMapper.selectList(null);
+		}
 
+	}
+	@Override
+	public void updateBalance(User user) throws Exception{
+		QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+		UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+		if(user!=null&&user.getId()!=null&&user.getBalance()!=null&&user.getStatus()==4) {
+			queryWrapper.eq("id", user.getId());
+			User selectOne = userMapper.selectOne(queryWrapper);
+			Double balance = selectOne.getBalance();
+			updateWrapper.eq("id", user.getId());
+			updateWrapper.set("balance", user.getBalance()+balance);
+			System.err.println("3"+user.getStatus());
+			userMapper.update(null, updateWrapper);
+		}
+		if(user.getStatus()==3) {
+			UpdateWrapper<User> updateWrapper1 = new UpdateWrapper<>();
+			updateWrapper1.set("status", 4);
+			updateWrapper1.set("balance", user.getBalance()-40);
+			updateWrapper1.eq("id", user.getId());
+			userMapper.update(null, updateWrapper1);
+			UpdateWrapper<DailyList> dailyListWorker = new UpdateWrapper<>();
+			dailyListWorker.eq("uid", user.getId());
+			dailyListWorker.set("status", 1);
+			dailyListMapper.update(null, dailyListWorker);
+
+		}
+
+
+	}
+	@Override
+	public List<User> getUserAdmissionregistration(User user) {
+		QueryWrapper<User> queryWorker = new QueryWrapper<>();
+		//通过前端传过来的用户名称查出这个对象的所有信息
+		if(user!=null&&user.getName()!=null&&user.getName()!="") {
+			queryWorker.like("name", user.getName());
+			queryWorker.eq("status", 3);
+			queryWorker.or();
+			queryWorker.eq("status", 4);
+			return userMapper.selectList(queryWorker);
+		}else {
+			queryWorker.eq("status", 3);
+			queryWorker.or();
+			queryWorker.eq("status", 4);
+
+			return userMapper.selectList(queryWorker);
+		}
+	}
+	@Override
+	public User userLogin(User user) throws IncorrectCredentialsException {
+		System.err.println("哈哈哈哈");
+		QueryWrapper<User> wrapper = new QueryWrapper<>();
+		if(user!=null&&user.getTel()!=null&&!user.getTel().equals("")&&user.getPassword()!=null&&!user.getPassword().equals("")) {
+			wrapper.eq("tel", user.getTel());
+			User selectOne = userMapper.selectOne(wrapper);
+			if(selectOne==null) {
+				user.setStatus(0);
+				userMapper.insert(user);
+				QueryWrapper<User> wrapper1 = new QueryWrapper<>();
+				wrapper1.eq("tel", user.getTel());
+				User selectOne2 = userMapper.selectOne(wrapper1);
+				return selectOne2;
+			}else if(selectOne!=null&&selectOne.getPassword().equals(user.getPassword())){
+				System.err.println("查询到");
+				User selectById = userMapper.selectById(selectOne.getId());
+				return selectById;
+			}
+		}
+		return null;
+
+	}
+	@Override
+	public List<Dept> getdept() {
+		QueryWrapper<Dept> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("id", 1);
+		queryWrapper.or();
+		queryWrapper.eq("id", 2);
+		queryWrapper.or();
+		queryWrapper.eq("id", 3);
+		queryWrapper.or();
+		queryWrapper.eq("id", 4);
+		queryWrapper.or();
+		queryWrapper.eq("id", 5);
+		queryWrapper.or();
+		queryWrapper.eq("id", 6);
+		return deptMapper.selectList(queryWrapper);
+	}
+	@Override
+	public void updateUserButton(User user) {
+		QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+		if(user!=null&&user.getTel()!=null) {
+			queryWrapper.eq("tel", user.getTel());
+			User selectOne = userMapper.selectOne(queryWrapper);
+			if(selectOne!=null&&selectOne.getId()!=null) {
+				System.err.println("select"+selectOne);
+				user.setId(selectOne.getId());
+				user.setPassword(selectOne.getPassword());
+				user.setStatus(1);
+				userMapper.updateById(user);
+			}
+		}
+
+	}
 }

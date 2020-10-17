@@ -79,7 +79,11 @@ public class DrugServiceImpl extends ServiceImpl<DrugMapper, Drug> implements Dr
 		}
 	}
 
+	@Override
+	public List<Drug> getDrugs() {
+
+		return drugMapper.selectList(null);
+	}
 
 
-	
 }
