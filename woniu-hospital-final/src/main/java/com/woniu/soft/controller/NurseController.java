@@ -31,10 +31,12 @@ public class NurseController {
 	private NurseService nurseService;
 	@GetMapping
 	//查询该护士负责的所有病人,不管任何状态的病人
-	public JSONResult selectLogById() {
+	public JSONResult selectLogById(User user) {
+		System.err.println(user);
 		Subject subject = SecurityUtils.getSubject();
 		Workers worker = (Workers)subject.getPrincipal();
-		return new JSONResult("200","success",nurseService.selectLogById(worker.getId()),null);
+		user.setNurse(worker.getId());
+		return new JSONResult("200","success",nurseService.selectLogById(user),null);
 	}
 	
 	@PostMapping

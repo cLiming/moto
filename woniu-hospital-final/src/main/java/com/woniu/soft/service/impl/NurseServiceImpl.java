@@ -60,11 +60,12 @@ public class NurseServiceImpl implements NurseService{
 	@Resource
 	private WorkersMapper workersMapper;
 	@Override
-	public List<User> selectLogById(Integer id) {
+	public List<User> selectLogById(User user) {
 		QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-		queryWrapper.eq("nurse", id);
+		queryWrapper.eq(user.getNurse()!=null,"nurse", user.getNurse());
 		return userMapper.selectList(queryWrapper);
 	}
+
 	@Override
 	public void insertPio(Pio pio) {
 		pioMapper.insert(pio);

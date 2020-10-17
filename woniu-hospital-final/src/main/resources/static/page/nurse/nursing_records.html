@@ -148,7 +148,7 @@
 				user:{
 					id:"",
 					name:"",
-					sex:null,
+					sex:"",
 					age:null,
 					idCard:"",
 					doctor:null,
@@ -166,6 +166,7 @@
 					var _this=this;
 					$.ajax({
 						url:"/nurse",
+						data:_this.user,
 						success:function(data){
 							if(data.code==200){
 								_this.list=data.list;

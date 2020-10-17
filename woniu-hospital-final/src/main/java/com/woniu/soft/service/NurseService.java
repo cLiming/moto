@@ -6,7 +6,7 @@ import com.woniu.soft.entity.*;
 
 public interface NurseService {
 	
-	public List<User> selectLogById(Integer id);
+	public List<User> selectLogById( User user);
 
 	public void insertPio(Pio pio);
 
