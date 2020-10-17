@@ -262,7 +262,7 @@ public class NurseServiceImpl implements NurseService{
 		if(user!=null&&user.getId()!=null&&user.getDoctor()!=null&&user.getNurse()!=null) {
 			UpdateWrapper<User> wrapper = new UpdateWrapper<>();
 			wrapper.eq("id", user.getId());
-			wrapper.set("status", 2);
+			wrapper.set("status", 3);
 			userMapper.update(null, wrapper);
 			DailyList dailyList = new DailyList();
 			dailyList.setStatus(0);
