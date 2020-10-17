@@ -17,5 +17,5 @@ import java.util.List;
 public interface RoleService extends IService<Role> {
     List<Role> getRole();
 
-    List<Role> selectRolePermission();
+
 }

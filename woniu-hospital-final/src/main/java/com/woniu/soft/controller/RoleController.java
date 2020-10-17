@@ -25,10 +25,6 @@ public class RoleController {
     @Resource
     private RoleService roleService;
 
-    @GetMapping("getRolePermisssion")
-    public JSONResult getRolePermission(){
-        System.err.println(roleService.selectRolePermission());
-        return new JSONResult("200","success",roleService.selectRolePermission(),null);
-    }
+
 }
 

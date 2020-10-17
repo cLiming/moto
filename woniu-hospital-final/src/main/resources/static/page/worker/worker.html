@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>护士页面</title>
+<script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="/js/vue.js"></script>
+<!-- 引入样式 -->
+<link rel="stylesheet"
+	href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+	<div id="app">
+	<el-button v-if="insertWorkervo" @click="insertWorker"
+				size="small">新增员工</el-button>	<br>
+		<el-table :data="list" border style="width: 100%">
+		<el-table-column fixed prop="id" label="编号"> </el-table-column>
+		<el-table-column prop="name" label="姓名"> </el-table-column> 
+		<el-table-column prop="sex" label="性别"> </el-table-column> 
+		<el-table-column prop="age" label="年龄"> </el-table-column> 		
+		<el-table-column prop="tel" label="电话"> </el-table-column> 
+		<el-table-column prop="rId" label="角色"></el-table-column>
+		<el-table-column prop="deptId" label="科室"></el-table-column>
+		<el-table-column label="操作">
+		<template slot-scope="scope">
+			<el-button v-if="deleteWorkervo" @click="deleteWorker(scope.row.id)" type="text"
+				size="small">删除员工</el-button>
+			<br>
+			<el-button v-if="updateWorkervo" @click="updateWorker(scope.row.id)" type="text"
+				size="small">修改员工</el-button>
+			<br>
+		</template>
+		</el-table-column> 
+		</el-table>
+		<el-dialog title="新增员工" :visible.sync="insertWorkerDialogVisible"
+			width="40%"> 
+			姓名：<el-input v-model="insertworker.name" placeholder="请输入员工姓名"></el-input>
+			性别：<template>
+				  <el-radio v-model="insertworker.sex" label="男">男</el-radio>
+				  <el-radio v-model="insertworker.sex" label="女">女</el-radio>
+				</template><br>
+			年龄：<el-input v-model="insertworker.age" placeholder="请输入年龄"></el-input>
+			电话：<el-input v-model="insertworker.tel" placeholder="请输入电话"></el-input>
+			密码：<el-input v-model="insertworker.password" placeholder="请输入密码"></el-input><br>
+			职位：
+			<template>
+			  <el-select v-model="insertworker.rId" placeholder="请选择">
+			    <el-option
+			      v-for="item in role"
+			      :key="item.id"
+			      :label="item.name"
+			      :value="item.id">
+			    </el-option>
+			  </el-select>
+			</template><br>
+			科室：
+			<template>
+			  <el-select v-model="insertworker.deptId" placeholder="请选择">
+			    <el-option
+			      v-for="item in dept"
+			      :key="item.id"
+			      :label="item.name"
+			      :value="item.id">
+			    </el-option>
+			  </el-select>
+			</template>
+		</el-form> <span slot="footer" class="dialog-footer"> <el-button
+				@click="insertWorkerDialogVisible = false">取 消</el-button> 
+			<el-button type="primary" @click="insertWorkerButton">新增</el-button>
+		</span> </el-dialog>
+		
+		<el-dialog title="修改员工信息" :visible.sync="updateWorkerDialogVisible"
+			width="40%"> 
+			姓名：<el-input v-model="workers.name" placeholder="请输入员工姓名"></el-input>
+			性别：<template>
+				  <el-radio v-model="workers.sex" label="男">男</el-radio>
+				  <el-radio v-model="workers.sex" label="女">女</el-radio>
+				</template><br>
+			年龄：<el-input v-model="workers.age" placeholder="请输入年龄"></el-input>
+			电话：<el-input v-model="workers.tel" placeholder="请输入电话"></el-input>
+			密码：<el-input v-model="workers.password" placeholder="请输入密码"></el-input><br>
+			职位：
+			<template>
+			  <el-select v-model="workers.rId" placeholder="请选择">
+			    <el-option
+			      v-for="item in role"
+			      :key="item.id"
+			      :label="item.name"
+			      :value="item.id">
+			    </el-option>
+			  </el-select>
+			</template><br>
+			科室：
+			<template>
+			  <el-select v-model="workers.deptId" placeholder="请选择">
+			    <el-option
+			      v-for="item in dept"
+			      :key="item.id"
+			      :label="item.name"
+			      :value="item.id">
+			    </el-option>
+			  </el-select>
+			</template>
+		</el-form> <span slot="footer" class="dialog-footer"> <el-button
+				@click="updateWorkerDialogVisible = false">取 消</el-button> 
+			<el-button type="primary" @click="updateWorkerButton">修改</el-button>
+		</span> </el-dialog>
+	</div>
+	<script type="text/javascript">
+		new Vue({
+			el : "#app",
+			data : {
+				list : [],
+				worker:{
+					id:"",
+					name:"",
+					sex:"",
+					age:"",
+					tel:"",
+					password:"",
+					rId:"",
+					deptId:""
+				},
+				insertworker:{
+					id:"",
+					name:"",
+					sex:"",
+					age:"",
+					tel:"",
+					password:"",
+					rId:"",
+					deptId:""
+				},
+				workers:{
+					id:"",
+					name:"",
+					sex:"",
+					age:"",
+					tel:"",
+					password:"",
+					rId:"",
+					deptId:""
+				},
+				rId:"",
+				role:[],
+				dept:[],
+				insertWorkervo:false,
+				deleteWorkervo:false,
+				updateWorkervo:false,
+				insertWorkerDialogVisible:false,
+				updateWorkerDialogVisible:false,
+			},
+			mounted : function() {
+				this.selectWorker();
+				this.selectButton();
+				
+			},
+			methods : {
+				selectWorker : function() {
+					var _this = this;
+					$.ajax({
+						url : "/workers/getworker",
+						data :  _this.worker,
+						success : function(data) {
+							if (data.code == 200) {
+								_this.list = data.list;
+								_this.selectrole();
+								_this.selectdept();
+							}
+						}
+					});
+				},
+				updateWorker:function(id){
+					var _this=this;
+					_this.updateWorkerDialogVisible=true;
+					_this.worker.id=id;
+					$.ajax({
+						url : "/workers/getoneworker",
+						data :  _this.worker,
+						success : function(data) {
+							if (data.code == 200&&data.obj!=null) {
+								_this.workers = data.obj;
+							}
+						}
+					});
+					
+				},
+				insertWorker:function(){
+					var _this = this;
+					_this.insertWorkerDialogVisible=true;
+					
+				},
+				insertWorkerButton:function(){
+					var _this = this;
+					$.ajax({
+						url : "/workers/insertworkers",
+						data : _this.insertworker,
+						success : function(data) {
+							if (data.code == 200) {
+								alert("新增成功");
+								_this.insertWorkerDialogVisible=false;
+								_this.selectWorker();
+							}
+						}
+					});
+				},
+				selectrole : function() {
+					var _this = this;
+					$.ajax({
+						url : "/workers/getRole",
+						success : function(data) {
+							if (data.code == 200) {
+								_this.role= data.list;
+								for(var i=0;i<_this.role.length;i++){
+									for(var j=0;j<_this.role.length;j++){
+										if(_this.list[i].rId==_this.role[j].id){
+											_this.list[i].rId=_this.role[j].name;
+										}	
+									}
+								}
+							}
+						}
+					});
+				},
+				selectdept: function() {
+					var _this = this;
+					$.ajax({
+						url : "/workers/getdept",
+						success : function(data) {
+							if (data.code == 200) {
+								_this.dept = data.list;
+								for(var i=0;i<_this.dept.length;i++){
+									for(var j=0;j<_this.dept.length;j++){
+										if(_this.list[i].deptId==_this.dept[j].id){
+											_this.list[i].deptId=_this.dept[j].name;
+										}	
+									}
+								}
+							}
+						}
+					});
+				},
+				selectButton : function() {
+					var href = location.href;
+					var pid = href.split("?")[1].split("=")[1];
+					//发送请求
+					var _this = this;
+					$.ajax({
+						url : "/workers/button",
+						data : {
+							pid : pid
+						},
+						success : function(data) {
+							if (data.code = "200") {
+								for (var i = 0; i < data.list.length; i++) {
+									if (data.list[i].name == "新增员工") {
+										_this.insertWorkervo = true;
+									}
+									if (data.list[i].name == "删除员工") {
+										_this.deleteWorkervo = true;
+									}
+									if (data.list[i].name == "修改员工") {
+										_this.updateWorkervo = true;
+									}
+								}
+							}
+						}
+					});
+				},
+				deleteWorker: function(id) {
+					var _this = this;
+					$.ajax({
+						url : "/workers/deleteWorker",
+						data:{id:id},
+						success : function(data) {
+							if (data.code == 200) {
+								alert("删除成功");
+								_this.selectWorker();
+							}
+						}
+					});
+				},
+				updateWorkerButton: function() {
+					var _this = this;
+					$.ajax({
+						url : "/workers/updateworkers",
+						data:_this.workers,
+						success : function(data) {
+							if (data.code == 200) {
+								alert("修改成功");
+								_this.updateWorkerButton=false;
+								_this.selectWorker();
+							}
+						}
+					});
+				},
+			}
+		});
+	</script>
+</body>
+</html>
