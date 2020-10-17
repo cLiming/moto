@@ -76,18 +76,20 @@ public class DrugHistoryServiceImpl extends ServiceImpl<DrugHistoryMapper, DrugH
 			if(status!=null){
 				wrapper.eq("status",status);
 			}
-			if(minDate!=null&&maxDate==null){
-				wrapper.gt(true,"date",minDate);
-			}else if (minDate==null&&maxDate!=null){
-				wrapper.lt(true,"date",maxDate);
-			}else if(minDate!=null&&maxDate!=null){
-				wrapper.between(true,"date",minDate,maxDate);
-			}
+//			if(minDate!=null&&maxDate==null){
+//				wrapper.gt(true,"date",minDate);
+//			}else if (minDate==null&&maxDate!=null) {
+//				wrapper.lt(true, "date", maxDate);
+//			}else if(minDate!=null&&maxDate!=null){
+//				wrapper.between(true,"date",minDate,maxDate);
+//			}
+
 			Page<DrugHistory> page = new Page<DrugHistory>(pageIndex,pageNum);
 			this.page(page,wrapper);
 			return page;
 		}
 	}
+
 
 	@Override
 	public Page selectDrugHistoryAll(Integer pageIndex, Integer pageNum) throws Exception {
