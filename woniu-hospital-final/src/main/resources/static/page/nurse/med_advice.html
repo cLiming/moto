@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <title>护士页面</title>
+	<style>
+		.for{
+			width:280px;
+			float:left;
+		}
+	</style>
 	<script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="/js/vue.js"></script>
 
@@ -15,6 +21,7 @@
 <body>
 	<div id="app">
 	<h1>医嘱信息</h1>
+
 		<el-table :data="records" border style="width: 100%">
 			<el-table-column fixed prop="id" label="编号"> </el-table-column>
 			<el-table-column prop="uId" label="用户名"> </el-table-column> 
@@ -114,8 +121,7 @@
 				selectUser:function() {
 					var _this = this;
 					$.ajax({
-						url : "/user/getUser", 
-						type:"post",
+						url : "/user/getUser",
 						data:_this.user,
 						success : function(data) {
 							if (data.code == 200) {

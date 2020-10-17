@@ -158,6 +158,16 @@
 						success : function(data) {
 							if (data.code == 200) {
 								_this.list = data.list;
+								for(var i=0;i<_this.allDoctors.length;i++){
+									for(var j=0;j<_this.list.length;j++) {
+										if (_this.list[j].doctor == _this.allDoctors[i].id) {
+											_this.list[j].doctor = _this.allDoctors[i].name;
+										}
+										if (_this.list[j].nurse == _this.allNurse[i].id) {
+											_this.list[j].nurse = _this.allNurse[i].name;
+										}
+									}
+								}
 							}
 						}
 					});
@@ -234,7 +244,7 @@
 				updataUserNurse:function(){
 					var _this = this;
 					_this.user.nurse=_this.nurses.id;
-					alert(_this.user.nurse);
+					//alert(_this.user.nurse);
 					$.ajax({
 						url : "/nurse/updataUserNurse",
 						data : _this.user,
@@ -278,7 +288,7 @@
 						}
 					});
 				},
-				updataUserDoctor:function(){
+				updataUserDoctor:function(id){
 					var _this = this;
 					_this.user.doctor=_this.docotors.id;
 					$.ajax({
@@ -296,6 +306,16 @@
 				},
 				updataAdmissionRegistration:function(users){
 					var _this = this;
+					for(var i=0;i<_this.allDoctors.length;i++){
+						if(users.doctor==_this.allDoctors[i].name){
+							users.doctor=_this.allDoctors[i].id;
+						}
+					}
+					for(var i=0;i<_this.allNurse.length;i++){
+						if(users.nurse==_this.allNurse[i].name){
+							users.nurse=_this.allNurse[i].id;
+						}
+					}
 					_this.user=users;
 					if(_this.user.doctor!=""&&_this.user.doctor!=null&&_this.user.nurse!=""&&_this.user.nurse!=null&&_this.user.bedId!=""&&_this.user.bedId!=null){
 						$.ajax({

@@ -220,7 +220,7 @@ public class NurseServiceImpl implements NurseService{
 		QueryWrapper<User> wrapper = new QueryWrapper<>();
 		wrapper.like(user.getName()!=""&&user.getName()!=null,"name",user.getName());
 		wrapper.eq(user.getSex()!=""&&user.getSex()!=null,"sex",user.getSex());
-		wrapper.eq(user.getIdCard()!=""&&user.getId()!=null,"id_card",user.getIdCard());
+		wrapper.eq(user.getIdCard()!=""&&user.getIdCard()!=null,"id_card",user.getIdCard());
 		wrapper.eq("status", 1);
 		return userMapper.selectList(wrapper);
 	}

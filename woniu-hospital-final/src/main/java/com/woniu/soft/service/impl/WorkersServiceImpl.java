@@ -122,7 +122,6 @@ public class WorkersServiceImpl extends ServiceImpl<WorkersMapper, Workers> impl
 	@Override
 	public void updateworkers(Workers worker) throws Exception{
 		workersMapper.updateById(worker);
-
 	}
 
 }
