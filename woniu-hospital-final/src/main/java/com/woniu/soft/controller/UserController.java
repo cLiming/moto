@@ -8,6 +8,7 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -19,7 +20,7 @@ import javax.annotation.Resource;
  * @author liming
  * @since 2020-10-15
  */
-@Controller
+@RestController 
 @RequestMapping("/user")
 public class UserController {
     @Resource
@@ -33,7 +34,7 @@ public class UserController {
     //通过姓名查询用户 如果没有用户名 则查询全部
     @RequestMapping("getUser")
     public JSONResult getUser(User user) throws Exception{
-
+        System.err.println(user);
         return new JSONResult("200","success",userService.getUser(user),null);
     }
     //充值页面 给用户充值

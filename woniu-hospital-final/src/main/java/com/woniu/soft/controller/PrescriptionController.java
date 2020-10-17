@@ -7,6 +7,7 @@ import com.woniu.soft.utils.JSONResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -18,7 +19,7 @@ import javax.annotation.Resource;
  * @author liming
  * @since 2020-10-15
  */
-@Controller
+@RestController
 @RequestMapping("/prescription")
 public class PrescriptionController {
     @Resource

@@ -13,6 +13,7 @@ import com.woniu.soft.service.PrescriptionService;
 import com.woniu.soft.utils.JSONResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
  * @author liming
  * @since 2020-10-15
  */
-@Controller
+@RestController
 @RequestMapping("/medAdvice")
 public class MedAdviceController {
     @Resource
@@ -70,7 +71,7 @@ public class MedAdviceController {
         medAdviceService.updateAdvice(medAdvice);
         System.out.println(medAdvice.getId());
         return new JSONResult("200", "success", null, null);
-        //return null;
+
     }
 
 }
