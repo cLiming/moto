@@ -23,6 +23,6 @@ public interface PrescriptionService extends IService<Prescription> {
 
 		Prescription getPresiption(MedAdvice medAdvice) throws Exception;
 
-		void updataPrescription(Prescription prescription) throws Exception;
+		void updatePrescription(Prescription prescription) throws Exception;
 	
 }

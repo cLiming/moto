@@ -27,7 +27,7 @@ public class PrescriptionController {
     //修改处方的状态
     @RequestMapping("updatePrescription")
     public JSONResult updatePrescription(Prescription prescription) throws Exception{
-        prescriptionService.updataPrescription(prescription);
+        prescriptionService.updatePrescription(prescription);
         return new JSONResult("200","success",null,null);
     }
 }

@@ -41,6 +41,7 @@ public class MedAdviceController {
     //查询所有的医嘱
     @RequestMapping("getAdvice")
     public JSONResult getAdvice() throws Exception{
+        //System.err.println("hahhahahas");
         Page<MedAdvice> page = new Page<MedAdvice>(1, 5);
         //查到所有的医嘱
         List<MedAdvice> list = medAdviceService.getAdvice(page);
@@ -61,7 +62,7 @@ public class MedAdviceController {
                 }
             }
         }
-        System.err.println(page.getRecords());
+        //System.err.println(page.getRecords());
         return new JSONResult("200", "success", null, page);
         //return null;
     }

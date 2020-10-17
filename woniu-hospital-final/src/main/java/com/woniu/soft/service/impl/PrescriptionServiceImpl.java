@@ -68,7 +68,7 @@ public class PrescriptionServiceImpl extends ServiceImpl<PrescriptionMapper, Pre
 		return prescription;
 	}
 	@Override
-	public void updataPrescription(Prescription prescription) throws Exception{
+	public void updatePrescription(Prescription prescription) throws Exception{
 		if(prescription!=null&&prescription.getId()!=null) {
 			UpdateWrapper<Prescription> updateWrapper = new UpdateWrapper<>();
 			updateWrapper.eq("id", prescription.getId());
