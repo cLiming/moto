@@ -83,20 +83,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 	}
 	@Override
 	public List<User> getUser(User user) throws Exception{
-		QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-		//System.err.println("tel"+user.getTel());
-		if(user!=null) {
-			if(user.getName()!=null&&!user.getName().equals("")) {
-				queryWrapper.like("name", user.getName());
-			}else if(user.getTel()!=null&&!user.getTel().equals("")){
-				queryWrapper.eq("tel", user.getTel());
-			}else if(user.getIdCard()!=null&&!user.getIdCard().equals("")){
-				queryWrapper.eq("id_card", user.getIdCard());
-			}
-			return userMapper.selectList(queryWrapper);
-		}else {
+		
 			return userMapper.selectList(null);
-		}
+
 
 	}
 	@Override

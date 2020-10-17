@@ -158,32 +158,32 @@ public class NurseController {
 	//选择医生信息
 	@RequestMapping("updataUserDocotors")
 	public JSONResult updataUserDocotors(User user) throws Exception{
-		nurseService.updataUserDocotors(user);
+		nurseService.updateUserDocotors(user);
 		return new JSONResult("200","success",null,null);
 	}
 	//修改用户护士信息
 	@RequestMapping("updataUserNurse")
 	public JSONResult updataUserNurse(User user) throws Exception{
 		System.out.println("nurse"+user);
-		nurseService.updataUserNurse(user);
+		nurseService.updateUserNurse(user);
 		return new JSONResult("200","success",null,null);
 	}
 	//修改用户床位信息
 	@RequestMapping("updataUserBed")
 	public JSONResult updataUserBed(User user) throws Exception{
-		nurseService.updataUserBed(user);
+		nurseService.updateUserBed(user);
 		return new JSONResult("200","success",null,null);
 	}
 	//选择了这个床位 将这个床位的状态改为1
 	@PostMapping("{id}")
 	public JSONResult updataBedStatus(@PathVariable("id") int id) throws Exception{
-		nurseService.updataBedStatus(id);
+		nurseService.updateBedStatus(id);
 		return new JSONResult("200","success",null,null);
 	}
 	//按键点击  提交入院登记功能（审核通过）
 	@RequestMapping("updataAdmissionRegistration")
 	public JSONResult updataAdmissionRegistration(User user) throws Exception{
-		nurseService.updataAdmissionRegistration(user);
+		nurseService.updateAdmissionRegistration(user);
 		return new JSONResult("200","success",null,null);
 	}
 	//护士的入院登记结束。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。
