@@ -88,10 +88,12 @@ public class NurseServiceImpl implements NurseService{
 		return pioMapper.selectList(wrapper);
 	}
 	@Override
-	public List<User> selectUserByStatus() {
+	public List<User> selectUserByStatus(User user) {
 		QueryWrapper<User> wrapper = new QueryWrapper<>();
-		wrapper.eq("status",4);
-
+		wrapper.eq(user.getStatus()!=null,"status",4);
+		wrapper.like(user.getName()!="","name",user.getName());
+		wrapper.eq(user.getSex()!="","sex",user.getSex());
+		wrapper.eq(user.getIdCard()!="","id_card",user.getIdCard());
 		return userMapper.selectList(wrapper);
 	}
 	@Override
