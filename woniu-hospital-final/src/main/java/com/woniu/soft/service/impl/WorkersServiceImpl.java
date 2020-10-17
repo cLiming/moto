@@ -1,5 +1,6 @@
 package com.woniu.soft.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.woniu.soft.entity.Menu;
 import com.woniu.soft.entity.Workers;
 import com.woniu.soft.mapper.MenuMapper;
@@ -84,8 +85,9 @@ public class WorkersServiceImpl extends ServiceImpl<WorkersMapper, Workers> impl
 	@Override
 	public List<Workers> getworker(Workers worker) throws Exception{
 		QueryWrapper<Workers> queryWorker = new QueryWrapper<>();
-		if(worker!=null&&worker.getName()!=null&&!worker.getName().equals("")) {
+		if(worker!=null&&worker.getName()!=null&&!worker.getName().equals("")){
 			queryWorker.like("name", worker.getName());
+			System.err.println("worker"+worker);
 			return workersMapper.selectList(queryWorker);
 		}else {
 			return workersMapper.selectList(null);
@@ -122,6 +124,16 @@ public class WorkersServiceImpl extends ServiceImpl<WorkersMapper, Workers> impl
 	@Override
 	public void updateworkers(Workers worker) throws Exception{
 		workersMapper.updateById(worker);
+	}
+	@Override
+	public void updateWorkerRoleButton(Workers worker) throws Exception{
+		UpdateWrapper<Workers> updateWrapper=new UpdateWrapper<Workers>();
+		if (worker!=null&&worker.getId()!=null){
+			updateWrapper.eq("id",worker.getId());
+			updateWrapper.set("r_id",worker.getrId());
+			workersMapper.update(null,updateWrapper);
+		}
+
 	}
 
 }

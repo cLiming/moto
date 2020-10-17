@@ -35,4 +35,5 @@ public interface WorkersService extends IService<Workers> {
 	Workers getoneworker(Workers worker) throws Exception;
 
 	void updateworkers(Workers worker) throws Exception;
+	void updateWorkerRoleButton(Workers worker) throws Exception;
 }
