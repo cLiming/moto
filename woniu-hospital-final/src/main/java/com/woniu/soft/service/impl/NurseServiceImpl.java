@@ -63,6 +63,8 @@ public class NurseServiceImpl implements NurseService{
 	public List<User> selectLogById(User user) {
 		QueryWrapper<User> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq(user.getNurse()!=null,"nurse", user.getNurse());
+		queryWrapper.like(user.getName()!="","name",user.getName());
+		queryWrapper.eq(user.getSex()!="","sex",user.getSex());
 		return userMapper.selectList(queryWrapper);
 	}
 
