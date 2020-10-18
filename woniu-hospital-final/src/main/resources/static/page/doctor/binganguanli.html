@@ -80,10 +80,13 @@
 					</el-table>
 					<div class="pagediv">
 						<el-pagination
-						  :page-size="20"
-						  :pager-count="11"
-						  layout="prev, pager, next"
-						  :total="500">
+								@size-change="handleSizeChange"
+								@current-change="handleCurrentChange"
+								:current-page="currentPage"
+								:page-size="pageSize"
+								layout="total, prev, pager, next"
+								background
+								:total="total">
 						</el-pagination>
 					</div>
 				</div>
@@ -109,6 +112,10 @@
 						uId:'',
 						detail:'',
 					},
+					//分页数据
+					total: 0,
+					pageSize: 10,
+					currentPage:1,
 				}
 			},
 			created() {
@@ -125,7 +132,6 @@
 					axios.get("/doc/selectCase").then(data => {
 						if (data.data.code == "200") {
 							this.tableData=data.data.list;
-							console.log(data.data.list);
 						}
 					});
 				},

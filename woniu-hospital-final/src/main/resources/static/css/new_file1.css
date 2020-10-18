@@ -36,6 +36,7 @@ a{
 	line-height: 30px;
 	border-bottom-left-radius: 10px;
 	border-bottom-right-radius: 10px;
+	background: linear-gradient(#2c0082,#5089fd);
 }
 
 .el-submenu__title{
@@ -47,34 +48,33 @@ a{
 	border-bottom-left-radius: 30px;
 	background-color: #323585 !important
 }
-.el-menu-item{
+.el-menu-item:hover{
 	color: whitesmoke;
-	background-color: #323585;
-	margin-left: 10px;
-	font-size: 18px;
-	border-top-left-radius: 30px;
-	border-bottom-left-radius: 30px;
-	background-color: #323585 !important
-}
-
-.el-menu-item.is-active {
-	color: whitesmoke;
-	background-image: linear-gradient(to right, #87b1f9, #e6e9f0);
+	background-image: linear-gradient(to right, #303384, #b9bbc1);
 	margin-left: 10px;
 	border-top-left-radius: 30px;
 	border-bottom-left-radius: 30px;
 	border-bottom-right-radius: 1px;
 	border-top-right-radius: 1px;
-	background-color: white !important
+}
+
+.el-menu-item.is-active {
+	color: whitesmoke;
+	margin-left: 10px;
+	font-size: 18px;
+	border-top-left-radius: 30px;
+	border-bottom-left-radius: 30px;
+	background-image: linear-gradient(to right, #303384, #e6e9f0);
 }
 
 .el-aside {
 	margin-top: 20px;
 	background-color: #323585;
-    text-align: center;
+	text-align: center;
 	border-radius: 20px;
 	height: 500px;
 	margin-right: 10px;
+	/*box-shadow:-30px 10px 70px #000;*/
 }
 #mokuaiming{
 	
@@ -97,9 +97,10 @@ a{
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
 	width: 90%;
-	height: 80px;
+	height: 60px;
 	margin-left: 5%;
-	 background: linear-gradient(#2939a7, #323585);
+	background: linear-gradient(#2939a7, #0b53e4);
+
 }
 
 #out a{
@@ -155,7 +156,7 @@ width: 100%;
 
 .el-pager li{
 	padding: 0 4px ;
-	background: #e6e9ef;
+	background: #e6e9ef !important;
 	font-size: 20px ;
 	min-width: 35.5px;
 	height: 28px;
@@ -174,6 +175,10 @@ width: 100%;
     cursor: pointer;
     margin: 0;
     color: #303133;
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+	background-color: #409EFF;
+	color: #080808 !important;
 }
 .pagediv{
 	margin-top: 30px;

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * <p>
@@ -46,7 +47,7 @@ public class WorkersController {
 	}
 
 	@RequestMapping("login")
-	public JSONResult login(Workers worker,boolean rememberMe) throws Exception{
+	public JSONResult login(Workers worker, boolean rememberMe) throws Exception{
 		//String password=MD5Utils.MD5EncodeUtf8(user.getPassword());
 		worker.setPassword(worker.getPassword());
 		//将登陆操作委托给shiro来完成

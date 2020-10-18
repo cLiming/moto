@@ -62,6 +62,18 @@
                 <el-table-column fixed="right" property="action" label="操作">
                 </el-table-column>
             </el-table>
+            <div class="pagediv">
+                <!-- 分页 paging -->
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next"
+                        background
+                        :total="total"
+                ></el-pagination>
+            </div>
         </div>
     </div>
 </div>
@@ -87,16 +99,19 @@
                 minDate:'',
                 maxDate:'',
 
+
                 //分页数据
-                pageIndex:'1',
-                pageNum:'10',
+                total:'',
+                pageSize: 3,
+                currentPage:1,
                 //药品信息数据
                 druptableData:'',
                 usertableData:''
             }
         },
         created(){
-            this.replac();
+           this.allqingdan();
+            this.replac(this.currentPage,this.pageSize);
         },
         methods: {
             repse(){
@@ -119,8 +134,20 @@
             selectTrigger(value){
                 this.drugId=value;
             },
+
+            handleSizeChange: function (size) {
+                this.pageSize = size;
+                console.log(this.pageSize);  //每页下拉显示数据
+                this.replac(this.currentPage,this.pageSize);
+            },
+            handleCurrentChange: function(currentPage){
+                this.currentPage = currentPage;
+                console.log(this.currentPage);  //点击第几页
+                this.replac(this.currentPage,this.pageSize);
+
+            },
             //重置查页面的方法
-            replac(){
+            allqingdan(){
                 //查询所有药品
                 axios.get("/doc/info").then(data => {
                     if (data.data.code == "200") {
@@ -129,10 +156,13 @@
                         this.drugLists=data.data.obj.drugList;
                     }
                 });
+            },
+            replac(currentPage,pageSize){
                 //查询所有清单的
-                axios.get("/phar/selectDrugHisAll?pageIndex="+this.pageIndex+"&pageNum="+this.pageNum).then(data => {
+                axios.get("/phar/selectDrugHisAll?pageIndex="+currentPage+"&pageNum="+pageSize).then(data => {
                     if (data.data.code == "200") {
                         this.tableData=data.data.obj.records;
+                        this.total=data.data.obj.total;
                     }
                 });
             },

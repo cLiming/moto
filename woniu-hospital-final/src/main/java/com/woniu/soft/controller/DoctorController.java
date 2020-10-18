@@ -137,7 +137,7 @@ public class DoctorController {
 		Prescription prescription = medAdvice.getPrescription();
 		double pPrice = 0;
 		double dPrice = 0;
-		if (prescription != null) {
+		if (prescription != null ) {
 			prescription.setAdId(medAdvice.getId());
 			prescriptionService.save(prescription);
 			List<PresDrug> drugInfo = prescription.getPresDrugs();
