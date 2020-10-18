@@ -1,8 +1,10 @@
 package com.woniu.soft.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -22,7 +24,16 @@ public class RolePermission implements Serializable {
     private Integer mid;
 
     private Integer rid;
+    @TableField(exist = false)
+    private Menu menu;
 
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
 
     public Integer getId() {
         return id;
@@ -51,9 +62,10 @@ public class RolePermission implements Serializable {
     @Override
     public String toString() {
         return "RolePermission{" +
-        "id=" + id +
-        ", mid=" + mid +
-        ", rid=" + rid +
-        "}";
+                "id=" + id +
+                ", mid=" + mid +
+                ", rid=" + rid +
+                ", menu=" + menu +
+                '}';
     }
 }

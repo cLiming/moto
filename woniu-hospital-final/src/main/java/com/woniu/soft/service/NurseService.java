@@ -45,16 +45,16 @@ public interface NurseService {
 
 	List<Bed> getAllBed() throws Exception;
 
-	void updataAdmissionRegistration(User user) throws Exception;
+	void updateAdmissionRegistration(User user) throws Exception;
 
-	void updataBedStatus(int id);
+	void updateBedStatus(int id);
 
 	List<MedAdvice> getAdviceinfo(User user);
 
-	void updataUserDocotors(User user);
+	void updateUserDocotors(User user);
 
-	void updataUserNurse(User user);
+	void updateUserNurse(User user);
 
-	void updataUserBed(User user);
+	void updateUserBed(User user);
 
 }

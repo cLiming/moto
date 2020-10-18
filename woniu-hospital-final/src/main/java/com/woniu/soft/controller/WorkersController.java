@@ -103,5 +103,13 @@ public class WorkersController {
 		workersService.updateworkers(worker);
 		return new JSONResult("200","success",null,null);
 	}
+
+	//修改员工role信息
+	@RequestMapping("updateWorkerRoleButton")
+	public JSONResult updateWorkerRoleButton(Workers worker) throws Exception{
+		System.err.println(worker);
+		workersService.updateWorkerRoleButton(worker);
+		return new JSONResult("200","success",null,null);
+	}
 }
 

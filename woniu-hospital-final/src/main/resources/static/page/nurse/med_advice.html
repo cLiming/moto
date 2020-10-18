@@ -84,7 +84,7 @@
 						url : "/drug/getDrugs",
 						success : function(data) {
 							_this.allDrugs=data.list;
-							alert("哈哈哈哈哈哈哈");
+
 							for(var i=0;i<_this.preUserDrugs.length;i++){
 								for(var j=0;j<_this.allDrugs.length;j++){
 									if(_this.preUserDrugs[i].drugId=_this.allDrugs[j].id){

@@ -46,6 +46,7 @@ public class UserController {
     //查询状态为3或者为4的用户
     @RequestMapping("getUserAdmissionregistration")
     public JSONResult getUserAdmissionregistration(User user) throws Exception{
+        System.err.println("getUserAdmissionregistration"+user);
         return new JSONResult("200","success",userService.getUserAdmissionregistration(user),null);
     }
     //查询部门除了 7 8 9 的所有部门

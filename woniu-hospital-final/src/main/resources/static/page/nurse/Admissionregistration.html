@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <title>护士页面</title>
+	<style>
+		.for{
+			width:280px;
+			float:left;
+		}
+	</style>
 <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="/js/vue.js"></script>
 <!-- 引入样式 -->
@@ -13,6 +19,25 @@
 </head>
 <body>
 	<div id="app">
+		<h1>入院页面</h1>
+		<div>
+			<el-form ref="form" :model="user" label-width="80px">
+				<div class="for">
+					<el-form-item label="输入用户名:" label-width="100px">
+						<el-input v-model="user.name" ></el-input>
+					</el-form-item>
+				</div>
+				<div class="for">
+					<el-form-item label="选择性别:" label-width="100px">
+						<el-select v-model="user.sex" >
+							<el-option label="全部" value=""></el-option>
+							<el-option label="男" value="男"></el-option>
+							<el-option label="女" value="女"></el-option>
+						</el-select>
+					</el-form-item>
+				</div>
+			</el-form>
+		</div>
 		<el-table :data="list" border style="width: 100%">
 		<el-table-column fixed prop="id" label="编号"> </el-table-column>
 		<el-table-column prop="name" label="姓名"> </el-table-column> 
@@ -129,12 +154,20 @@
 					var _this = this;
 					$.ajax({
 						url : "/nurse/Admissionregistration",
-						data : {
-							user : _this.user
-						},
+						data : _this.user,
 						success : function(data) {
 							if (data.code == 200) {
 								_this.list = data.list;
+								for(var i=0;i<_this.allDoctors.length;i++){
+									for(var j=0;j<_this.list.length;j++) {
+										if (_this.list[j].doctor == _this.allDoctors[i].id) {
+											_this.list[j].doctor = _this.allDoctors[i].name;
+										}
+										if (_this.list[j].nurse == _this.allNurse[i].id) {
+											_this.list[j].nurse = _this.allNurse[i].name;
+										}
+									}
+								}
 							}
 						}
 					});
@@ -211,7 +244,7 @@
 				updataUserNurse:function(){
 					var _this = this;
 					_this.user.nurse=_this.nurses.id;
-					alert(_this.user.nurse);
+					//alert(_this.user.nurse);
 					$.ajax({
 						url : "/nurse/updataUserNurse",
 						data : _this.user,
@@ -255,7 +288,7 @@
 						}
 					});
 				},
-				updataUserDoctor:function(){
+				updataUserDoctor:function(id){
 					var _this = this;
 					_this.user.doctor=_this.docotors.id;
 					$.ajax({
@@ -273,6 +306,16 @@
 				},
 				updataAdmissionRegistration:function(users){
 					var _this = this;
+					for(var i=0;i<_this.allDoctors.length;i++){
+						if(users.doctor==_this.allDoctors[i].name){
+							users.doctor=_this.allDoctors[i].id;
+						}
+					}
+					for(var i=0;i<_this.allNurse.length;i++){
+						if(users.nurse==_this.allNurse[i].name){
+							users.nurse=_this.allNurse[i].id;
+						}
+					}
 					_this.user=users;
 					if(_this.user.doctor!=""&&_this.user.doctor!=null&&_this.user.nurse!=""&&_this.user.nurse!=null&&_this.user.bedId!=""&&_this.user.bedId!=null){
 						$.ajax({
@@ -291,6 +334,15 @@
 						_this.selectUser();
 					}
 					
+				}
+			},
+			watch:{
+				user:{
+					//深度监听 监听对象中属性的变化
+					handler:function(newUser){
+						this.selectUser();
+					},
+					deep:true
 				}
 			}
 		});

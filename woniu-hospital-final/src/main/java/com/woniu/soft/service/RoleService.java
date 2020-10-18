@@ -2,6 +2,7 @@ package com.woniu.soft.service;
 
 import com.woniu.soft.entity.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.woniu.soft.entity.RolePermission;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ import java.util.List;
  */
 public interface RoleService extends IService<Role> {
     List<Role> getRole();
+
+
 }
