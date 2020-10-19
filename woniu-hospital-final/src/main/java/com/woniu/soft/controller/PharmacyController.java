@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.woniu.soft.entity.*;
+import javafx.concurrent.Worker;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -107,8 +108,8 @@ public class PharmacyController {
 	@RequestMapping("/returnDrug")
 	public JSONResult updateDrug(Integer drugId,Integer number,Integer id,Integer uid)throws Exception{
 		Subject subject = SecurityUtils.getSubject();
-		User user = (User) subject.getPrincipal();
-		Integer wid=user.getId();
+		Workers workers = (Workers) subject.getPrincipal();
+		Integer wid=workers.getId();
 		drugService.updateDrugUp(drugId, number);
 		dhService.saveDrugReturn(drugId, number,uid,wid);
 		raService.updateStatusEq3(id);

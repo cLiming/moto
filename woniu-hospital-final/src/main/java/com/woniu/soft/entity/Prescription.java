@@ -14,7 +14,7 @@ import java.util.List;
  * @author liming
  * @since 2020-10-15
  */
-public class Prescription implements Serializable {
+public class    Prescription implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
