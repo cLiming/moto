@@ -82,12 +82,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		return this.list(userWrapper);
 	}
 	@Override
-	public List<User> getUser(User user) throws Exception{
-		
-			return userMapper.selectList(null);
-
-
+	public List<User> getUser(User user) throws Exception {
+		QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+		if (user != null && user.getTel() != null) {
+			userQueryWrapper.eq("tel", user.getTel());
+			return userMapper.selectList(userQueryWrapper);
+		}
+		return userMapper.selectList(null);
 	}
+
 	@Override
 	public void updateBalance(User user) throws Exception{
 		QueryWrapper<User> queryWrapper = new QueryWrapper<>();
