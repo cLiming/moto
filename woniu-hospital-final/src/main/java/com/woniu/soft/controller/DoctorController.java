@@ -143,7 +143,7 @@ public class DoctorController {
 			List<PresDrug> drugInfo = prescription.getPresDrugs();
 			if (drugInfo != null) {
 				for (PresDrug presDrug : drugInfo) {
-					if (presDrug.getDrugId() != null || !presDrug.getDrugId().equals("")) {
+					if (presDrug.getDrugId() != null) {
 						presDrug.setPresId(medAdvice.getPrescription().getId());
 						presDrugService.save(presDrug);
 						Drug drug = drugService.getById(presDrug.getDrugId());

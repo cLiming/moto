@@ -139,7 +139,7 @@
             //     this.returnApplication='';
             // },
             submitForm(formNames) {
-               axios.post("/doc/leave?ui",this.druplists).then(data => {
+               axios.post("/doc/returnDrug?ui",this.druplists).then(data => {
                     if (data.data.code == "200") {
                         this.$message({
                             message: '退药申请成功',
