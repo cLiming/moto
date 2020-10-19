@@ -100,7 +100,6 @@ public class NurseServiceImpl implements NurseService{
 	public List<MedAdvice> selectAdvices(Integer id) {
 		QueryWrapper<MedAdvice> wrapper = new QueryWrapper<>();
 		wrapper.eq("u_id", id);
-		wrapper.eq("status", 1); //已完成，未结算的医嘱
 		return medAdviceMapper.selectList(wrapper);
 	}
 	//将项目对象封装到医嘱详情中，将医嘱详情集合封装到医嘱对象中

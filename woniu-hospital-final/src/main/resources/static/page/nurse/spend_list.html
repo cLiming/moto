@@ -165,7 +165,6 @@
 			
 			spendList:function(id){
 				this.queryHospitalizationSpend(id);
-				this.allSpend();
 				this.showAdviceVisible=true;
 				var _this=this;
 				_this.uid=id;
@@ -216,7 +215,7 @@
 				});
 			},
 			/*查询该医嘱处方花费，传入的是医嘱id 传回该医嘱的所有药品，单价，总价 */
-			queryPrescriptionSpend(id){
+			queryPrescriptionSpend:function(id){
 				this.showPres=true;
 				var _this=this;
 				_this.adviceId=id;
