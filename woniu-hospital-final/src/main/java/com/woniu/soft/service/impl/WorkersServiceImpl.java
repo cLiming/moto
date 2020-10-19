@@ -101,12 +101,13 @@ public class WorkersServiceImpl extends ServiceImpl<WorkersMapper, Workers> impl
 	}
 	@Override
 	public void insertworker(Workers worker) throws Exception{
+		System.err.println("hehehe"+worker);
 		//先判断电话是否存在 不存在再进行新增
 		if(worker!=null) {
 			QueryWrapper<Workers> queryWrapper = new QueryWrapper<>();
 			queryWrapper.eq("tel", worker.getTel());
 			Workers workers = workersMapper.selectOne(queryWrapper);
-			if(workers==null) {
+			if(workers!=null) {
 				workersMapper.insert(worker);
 			}
 		}
