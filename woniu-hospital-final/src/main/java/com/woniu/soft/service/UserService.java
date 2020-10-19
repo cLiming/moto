@@ -31,7 +31,7 @@ public interface UserService extends IService<User> {
 
 	List<User> getUserAdmissionregistration(User user) throws Exception;
 
-	User userLogin(User user) throws IncorrectCredentialsException;
+	User updateuserLogin(User user) throws IncorrectCredentialsException;
 
 	List<Dept> getdept();
 

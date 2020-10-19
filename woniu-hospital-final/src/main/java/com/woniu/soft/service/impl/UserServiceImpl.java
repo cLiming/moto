@@ -131,7 +131,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 	}
 	@Override
-	public User userLogin(User user) throws IncorrectCredentialsException {
+	public User updateuserLogin(User user) throws IncorrectCredentialsException {
 		System.err.println("哈哈哈哈");
 		QueryWrapper<User> wrapper = new QueryWrapper<>();
 		if(user!=null&&user.getTel()!=null&&!user.getTel().equals("")&&user.getPassword()!=null&&!user.getPassword().equals("")) {

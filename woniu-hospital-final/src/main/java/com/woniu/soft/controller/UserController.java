@@ -29,7 +29,7 @@ public class UserController {
     @RequestMapping("login")
     public JSONResult userLogin(User user) throws IncorrectCredentialsException {
 
-        return new JSONResult("200","success",null,userService.userLogin(user));
+        return new JSONResult("200","success",null,userService.updateuserLogin(user));
     }
     //通过姓名查询用户 如果没有用户名 则查询全部
     @RequestMapping("getUser")
